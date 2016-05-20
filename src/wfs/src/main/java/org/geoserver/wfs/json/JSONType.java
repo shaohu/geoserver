@@ -63,6 +63,18 @@ public enum JSONType {
     public final static String simple_json = "json";
 
     public final static String jsonp = "text/javascript";
+    
+    public final static String json_exi = "application/json-exi";
+    public final static String simple_json_exi = "json-exi";
+    
+    public final static String json_zip = "application/json-zip";
+    public final static String simple_json_zip = "json-zip";
+    
+    public final static String json_7z = "application/json-7z";
+    public final static String simple_json_7z = "json-7z";
+    
+    public final static String json_lzma = "application/json-lzma";
+    public final static String simple_json_lzma = "json-lzma";
 
     /**
      * The key of the property to enable the JSonp responses This property is set default to false.
@@ -79,6 +91,28 @@ public enum JSONType {
      */
     public static boolean isJsonpMimeType(String type) {
         return JSONType.jsonp.equalsIgnoreCase(type);
+    }
+    
+    /**
+     * Check if the passed MimeType is a valid Exi output format
+     * hu shao
+     * @param type the MimeType string representation to check
+     * @return true if type is equalsIgnoreCase to {@link #jsonp}
+     */
+    public static boolean isJson2EXIMimeType(String type) {
+        return JSONType.json_exi.equalsIgnoreCase(type)||JSONType.simple_json_exi.equalsIgnoreCase(type);
+    }
+    
+    /**
+     * Check if the passed MimeType is a valid zip output format
+     * hu shao
+     * @param type the MimeType string representation to check
+     * @return true if type is equalsIgnoreCase to {@link #jsonp}
+     */
+    public static boolean isJson2ZipMimeType(String type) {
+        return JSONType.json_zip.equalsIgnoreCase(type)||JSONType.simple_json_zip.equalsIgnoreCase(type)
+        		||JSONType.json_7z.equalsIgnoreCase(type)||JSONType.simple_json_7z.equalsIgnoreCase(type)
+        		||JSONType.json_lzma.equalsIgnoreCase(type)||JSONType.simple_json_lzma.equalsIgnoreCase(type);
     }
 
     /**

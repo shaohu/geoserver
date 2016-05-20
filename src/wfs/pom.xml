@@ -106,6 +106,40 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
+	<dependency>
+		<groupId>com.siemens.ct.exi</groupId>
+		<artifactId>exificient</artifactId>
+		<version>0.9.7-SNAPSHOT</version>
+	</dependency>
+	<dependency>
+		<groupId>com.siemens.ct.exi</groupId>
+		<artifactId>exificient-for-json</artifactId>
+		<version>0.9.6</version>
+	</dependency>
+	<dependency>
+		<groupId>org.tukaani</groupId>
+		<artifactId>xz</artifactId>
+		<version>1.5</version>
+	</dependency>
   </dependencies>
+  
+  	<repositories>
+		<repository>
+			<id>exificient-repository</id>
+			<name>central.maven.org repository</name>
+			<url>http://central.maven.org/maven2</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>maven2-repository.dev.java.net</id>
+			<name>Java.net repository</name>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
+		<repository>
+			<id>osgeo</id>
+			<name>Open Source Geospatial Foundation Repository</name>
+			<url>http://download.osgeo.org/webdav/geotools/</url>
+		</repository>
+	</repositories>
 
 </project>

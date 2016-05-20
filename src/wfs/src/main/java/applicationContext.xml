@@ -618,6 +618,31 @@
         <constructor-arg ref="geoServer"/>
     </bean>
 
+    <!--register extra formats, including exi, zip and gzip. By Hu Shao -->
+	<bean id="gml3-exi-OutputFormat" 
+		class="org.geoserver.wfs.format.ext.GML3EXIOutputFormat">
+		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="xmlConfiguration-1.1"/>
+	</bean>
+	
+	<bean id="gml3-zip-OutputFormat" 
+		class="org.geoserver.wfs.format.ext.GML3ZIPOutputFormat">
+		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="xmlConfiguration-1.1"/>
+	</bean>
+	
+	<bean id="gml3-7z-OutputFormat" 
+		class="org.geoserver.wfs.format.ext.GML37ZOutputFormat">
+		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="xmlConfiguration-1.1"/>
+	</bean>
+	
+	<bean id="gml3-lzma-OutputFormat" 
+		class="org.geoserver.wfs.format.ext.GML3LZMAOutputFormat">
+		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="xmlConfiguration-1.1"/>
+	</bean>
+
 	<!-- GetFeature JSONP -->
 	<bean id="geoJSONPGetFeatureResponse" class="org.geoserver.wfs.json.GeoJSONGetFeatureResponse">
 		<constructor-arg ref="geoServer" />
@@ -649,6 +674,43 @@
 		<constructor-arg ref="geoServer" />
 		<constructor-arg value="application/json" />
 	</bean>
+	
+	<!-- GetFeature JSON EXI, hu.shao@asu.edu-->
+	<bean id="geoJSONExiGetFeatureResponse" class="org.geoserver.wfs.format.ext.JsonEXIOutputFormat">
+		<constructor-arg ref="geoServer" />
+		<constructor-arg value="application/json-exi" />
+	</bean>
+	<bean id="geoSimpleJSONExiGetFeatureResponse" class="org.geoserver.wfs.format.ext.JsonEXIOutputFormat">
+		<constructor-arg ref="geoServer" />
+		<constructor-arg value="json-exi" />
+	</bean>
+	
+	<bean id="geoJSONZipGetFeatureResponse" class="org.geoserver.wfs.format.ext.JsonZIPOutputFormat">
+		<constructor-arg ref="geoServer" />
+		<constructor-arg value="application/json-zip" />
+	</bean>
+	<bean id="geoSimpleJSONZipGetFeatureResponse" class="org.geoserver.wfs.format.ext.JsonZIPOutputFormat">
+		<constructor-arg ref="geoServer" />
+		<constructor-arg value="json-zip" />
+	</bean>
+	
+	<bean id="geoJSON7ZGetFeatureResponse" class="org.geoserver.wfs.format.ext.Json7ZOutputFormat">
+		<constructor-arg ref="geoServer" />
+		<constructor-arg value="application/json-7z" />
+	</bean>
+	<bean id="geoSimpleJSON7ZGetFeatureResponse" class="org.geoserver.wfs.format.ext.Json7ZOutputFormat">
+		<constructor-arg ref="geoServer" />
+		<constructor-arg value="json-7z" />
+	</bean>
+	
+	<bean id="geoJSONLZMAGetFeatureResponse" class="org.geoserver.wfs.format.ext.JsonLZMAOutputFormat">
+		<constructor-arg ref="geoServer" />
+		<constructor-arg value="application/json-lzma" />
+	</bean>
+	<bean id="geoSimpleJSONLZMAGetFeatureResponse" class="org.geoserver.wfs.format.ext.JsonLZMAOutputFormat">
+		<constructor-arg ref="geoServer" />
+		<constructor-arg value="json-lzma" />
+	</bean>
     
     <!-- workspace qualifier -->
     <bean id="wfsWorkspaceQualifier" class="org.geoserver.wfs.WFSWorkspaceQualifier">
@@ -670,5 +732,4 @@
     
     <!-- XStream persister initializer -->
     <bean id="wfsXStreamPersisterInitializer" class="org.geoserver.wfs.WFSXStreamPersisterInitializer" />
-
 </beans>

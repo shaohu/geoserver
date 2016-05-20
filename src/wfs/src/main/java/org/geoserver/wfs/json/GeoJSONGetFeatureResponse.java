@@ -63,7 +63,11 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
             jsonp = false;
         } else if (JSONType.isJsonpMimeType(format)) {
             jsonp = true;
-        } else {
+        } else if (JSONType.isJson2EXIMimeType(format)) {
+        	jsonp = false;
+        } else if (JSONType.isJson2ZipMimeType(format)) {
+        	jsonp = false;
+        }  else {
             throw new IllegalArgumentException(
                     "Unable to create the JSON Response handler using format: " + format
                             + " supported mymetype are: "
