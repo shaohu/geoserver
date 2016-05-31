@@ -12,6 +12,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -96,6 +97,7 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
     @Override
     protected void write(FeatureCollectionResponse featureCollection, OutputStream output,
             Operation describeFeatureType) throws IOException {
+    	Date date_begin = new Date();
 
         int numDecimals = getNumDecimals(featureCollection.getFeature(), gs, gs.getCatalog());
 
@@ -114,7 +116,7 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
         }
         // prepare to write out
         OutputStreamWriter osw = null;
-        Writer outWriter = null;
+        Writer outWriter = null; 
         boolean hasGeom = false;
 
         // get feature count for request
@@ -292,6 +294,8 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
             serviceException.initCause(jsonException);
             throw serviceException;
         }
+        Date date_end = new Date();
+        System.out.println("Time for GeoJson preparing = "+(date_end.getTime() - date_begin.getTime()));
     }
 
     private void writeCrs(final GeoJSONBuilder jsonWriter,

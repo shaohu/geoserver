@@ -684,6 +684,23 @@
 		<constructor-arg ref="geoServer" />
 		<constructor-arg value="json-exi" />
 	</bean>
+
+	<bean id="geoJSONExiGetFeatureResponseWithJava" class="org.geoserver.wfs.format.ext.JsonEXIOutputFormat">
+		<constructor-arg ref="geoServer" />
+		<constructor-arg value="application/json-javaexi" />
+	</bean>
+	<bean id="geoSimpleJSONExiGetFeatureResponseWithJava" class="org.geoserver.wfs.format.ext.JsonEXIOutputFormat">
+		<constructor-arg ref="geoServer" />
+		<constructor-arg value="json-javaexi" />
+	</bean>
+	<bean id="geoJSONExiGetFeatureResponseWithJavaCommonStrong" class="org.geoserver.wfs.format.ext.JsonEXIOutputFormat">
+		<constructor-arg ref="geoServer" />
+		<constructor-arg value="application/json-javaexicommonstring" />
+	</bean>
+	<bean id="geoSimpleJSONExiGetFeatureResponseWithJavaCommonStrong" class="org.geoserver.wfs.format.ext.JsonEXIOutputFormat">
+		<constructor-arg ref="geoServer" />
+		<constructor-arg value="json-javaexicommonstring" />
+	</bean>
 	
 	<bean id="geoJSONZipGetFeatureResponse" class="org.geoserver.wfs.format.ext.JsonZIPOutputFormat">
 		<constructor-arg ref="geoServer" />

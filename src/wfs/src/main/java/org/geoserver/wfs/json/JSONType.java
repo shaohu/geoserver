@@ -66,6 +66,10 @@ public enum JSONType {
     
     public final static String json_exi = "application/json-exi";
     public final static String simple_json_exi = "json-exi";
+    public final static String json_exi_java = "application/json-javaexi";
+    public final static String simple_json_exi_java = "json-javaexi";
+    public final static String json_exicommonstring_java = "application/json-javaexicommonstring";
+    public final static String simple_json_exicommonstring_java = "json-javaexicommonstring";
     
     public final static String json_zip = "application/json-zip";
     public final static String simple_json_zip = "json-zip";
@@ -100,7 +104,9 @@ public enum JSONType {
      * @return true if type is equalsIgnoreCase to {@link #jsonp}
      */
     public static boolean isJson2EXIMimeType(String type) {
-        return JSONType.json_exi.equalsIgnoreCase(type)||JSONType.simple_json_exi.equalsIgnoreCase(type);
+        return JSONType.json_exi.equalsIgnoreCase(type)||JSONType.simple_json_exi.equalsIgnoreCase(type)
+        		|| JSONType.json_exi_java.equalsIgnoreCase(type)||JSONType.simple_json_exi_java.equalsIgnoreCase(type)
+        		|| JSONType.json_exicommonstring_java.equalsIgnoreCase(type)||JSONType.simple_json_exicommonstring_java.equalsIgnoreCase(type);
     }
     
     /**

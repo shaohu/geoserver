@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.zip.GZIPOutputStream;
 
 import org.geoserver.config.GeoServer;
@@ -26,11 +27,10 @@ public class JsonLZMAOutputFormat extends GeoJSONGetFeatureResponse {
 
 	protected void write(FeatureCollectionResponse featureCollection, OutputStream output,
 			Operation getFeature) throws IOException {
-		
 		ByteArrayOutputStream jsonOutputStream = new ByteArrayOutputStream();
 		super.write(featureCollection, jsonOutputStream, getFeature);
 		//System.out.println(new String(jsonOutputStream.toByteArray()));
-		
+		Date date_begin = new Date();
 		byte[] inputBytes = jsonOutputStream.toByteArray();
     	java.io.BufferedInputStream inStream  = new java.io.BufferedInputStream(new ByteArrayInputStream(inputBytes));
 		java.io.BufferedOutputStream outStream = new java.io.BufferedOutputStream(output);
@@ -43,6 +43,9 @@ public class JsonLZMAOutputFormat extends GeoJSONGetFeatureResponse {
     	encoder.Code(inStream, outStream, -1, -1, null);
     	outStream.flush();
     	outStream.close();
+    	Date date_end = new Date();
+        System.out.println("Time for LZMA compression = "+(date_end.getTime() - date_begin.getTime()));
+//        System.out.println("Size for LZMA compression = "+(inputBytes.length));
 	}
 	
 	@Override
