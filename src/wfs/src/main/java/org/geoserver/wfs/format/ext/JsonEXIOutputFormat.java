@@ -108,9 +108,9 @@ public class JsonEXIOutputFormat extends GeoJSONGetFeatureResponse {
 	protected void encodingJSONIntoEXIByJava(FeatureCollectionResponse featureCollection, ByteArrayOutputStream jsonOutputStream, OutputStream originalOutputStream){
 		InputStream jsonInputStream = new ByteArrayInputStream(jsonOutputStream.toByteArray());
 		try {
-	        ArrayList<String> commonStrings = WFSEXICommonMethods.extractCommonStringsFromFeatureCollection(featureCollection);
+//	        ArrayList<String> commonStrings = WFSEXICommonMethods.extractCommonStringsFromFeatureCollection(featureCollection);
 			EXIFactory ef = DefaultEXIFactory.newInstance();
-			ef.setSharedStrings(commonStrings);
+//			ef.setSharedStrings(commonStrings);
 			
 			EXIforJSONGenerator e4jGenerator = new EXIforJSONGenerator(ef);
 			e4jGenerator.generate(jsonInputStream, originalOutputStream);
