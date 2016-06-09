@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.zip.GZIPOutputStream;
 
 import org.geoserver.config.GeoServer;
@@ -24,7 +25,7 @@ public class Json7ZOutputFormat extends GeoJSONGetFeatureResponse {
 
 	protected void write(FeatureCollectionResponse featureCollection, OutputStream output,
 			Operation getFeature) throws IOException {
-		
+		Date date_getRequest = new Date();
 		ByteArrayOutputStream jsonOutputStream = new ByteArrayOutputStream();
 		super.write(featureCollection, jsonOutputStream, getFeature);
 		//System.out.println(new String(jsonOutputStream.toByteArray()));
@@ -44,6 +45,8 @@ public class Json7ZOutputFormat extends GeoJSONGetFeatureResponse {
 		}
 		xzout.flush();
 		xzout.close();
+		Date date_end = new Date();
+		TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_getRequest.getTime());
 	}
 	
 	@Override

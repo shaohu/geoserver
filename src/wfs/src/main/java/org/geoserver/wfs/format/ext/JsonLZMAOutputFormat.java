@@ -27,6 +27,7 @@ public class JsonLZMAOutputFormat extends GeoJSONGetFeatureResponse {
 
 	protected void write(FeatureCollectionResponse featureCollection, OutputStream output,
 			Operation getFeature) throws IOException {
+		Date date_getRequest = new Date(); 
 		ByteArrayOutputStream jsonOutputStream = new ByteArrayOutputStream();
 		super.write(featureCollection, jsonOutputStream, getFeature);
 		//System.out.println(new String(jsonOutputStream.toByteArray()));
@@ -46,6 +47,7 @@ public class JsonLZMAOutputFormat extends GeoJSONGetFeatureResponse {
     	Date date_end = new Date();
         System.out.println("Time for LZMA compression = "+(date_end.getTime() - date_begin.getTime()));
 //        System.out.println("Size for LZMA compression = "+(inputBytes.length));
+        TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_getRequest.getTime());
 	}
 	
 	@Override

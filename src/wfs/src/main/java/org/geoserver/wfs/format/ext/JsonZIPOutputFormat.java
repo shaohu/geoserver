@@ -25,7 +25,7 @@ public class JsonZIPOutputFormat extends GeoJSONGetFeatureResponse {
 
 	protected void write(FeatureCollectionResponse featureCollection, OutputStream output,
 			Operation getFeature) throws IOException {
-		
+		Date date_getRequest = new Date();
 		ByteArrayOutputStream jsonOutputStream = new ByteArrayOutputStream();
 		super.write(featureCollection, jsonOutputStream, getFeature);
 		//System.out.println(new String(jsonOutputStream.toByteArray()));
@@ -37,6 +37,7 @@ public class JsonZIPOutputFormat extends GeoJSONGetFeatureResponse {
         Date date_end = new Date();
         System.out.println("Time for g-zip compression = "+(date_end.getTime() - date_begin.getTime()));
 //        System.out.println("Size for g-zip compression = "+(jsonOutputStream.toByteArray().length));
+        TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_getRequest.getTime());
 	}
 	
 	@Override

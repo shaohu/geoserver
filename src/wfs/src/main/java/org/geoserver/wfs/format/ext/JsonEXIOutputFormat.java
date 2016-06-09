@@ -51,7 +51,7 @@ public class JsonEXIOutputFormat extends GeoJSONGetFeatureResponse {
 
 	protected void write(FeatureCollectionResponse featureCollection, OutputStream output,
 			Operation getFeature) throws IOException {
-
+		Date date_getRequest = new Date();
 		ByteArrayOutputStream jsonOutputStream = new ByteArrayOutputStream();
 		super.write(featureCollection, jsonOutputStream, getFeature);
 		Date date_begin = new Date();
@@ -82,7 +82,8 @@ public class JsonEXIOutputFormat extends GeoJSONGetFeatureResponse {
 //			
 //	        System.out.println("Size for JSON-EXI-JavaScript compression = "+((sizeOS).size()));
 		}
-		
+		Date date_end = new Date();
+		TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_getRequest.getTime());
 	}
 	
 

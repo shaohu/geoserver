@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
@@ -30,7 +31,8 @@ public class GML3ZIPOutputFormat extends GML3OutputFormat {
 	
 	@Override
 	protected void write(FeatureCollectionResponse featureCollection, OutputStream output, Operation getFeature)
-			throws IOException, ServiceException {		
+			throws IOException, ServiceException {
+		Date date_getRequest = new Date();
 		ByteArrayOutputStream gmlOutputStream = new ByteArrayOutputStream();
 
 		super.write(featureCollection, gmlOutputStream, getFeature);
@@ -49,6 +51,8 @@ public class GML3ZIPOutputFormat extends GML3OutputFormat {
         GZIPOutputStream gzip = new GZIPOutputStream(output);
         gzip.write(gmlOutputStream.toByteArray());
         gzip.close();
+        Date date_end = new Date();
+        TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_getRequest.getTime());
 	}
 	
 	@Override
