@@ -263,6 +263,12 @@ public interface WFSInfo extends ServiceInfo {
      * The srs's that the WFS service will advertise in the capabilities document
      */
     List<String> getSRS();
+    
+    /**
+     * the method for feature data simplification, including the DP(Douglas-Peucker algorithm) and (TP)(topology-preserving simplification) method
+     * @return
+     */
+    String getSimplifyMethod();
 
     
 }

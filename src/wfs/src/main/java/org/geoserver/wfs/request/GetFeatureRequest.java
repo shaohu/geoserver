@@ -69,6 +69,10 @@ public abstract class GetFeatureRequest extends RequestObject {
     
     public abstract void setMaxFeatures(BigInteger maxFeatures); 
     
+    public abstract String getSimplifyMethod();
+    
+    public abstract void setSimplifyMethod(String simplifyMethod); 
+    
     public abstract String getTraverseXlinkDepth();
     
     public abstract boolean isResultTypeResults();
@@ -180,6 +184,17 @@ public abstract class GetFeatureRequest extends RequestObject {
             BigInteger seconds = eGet(adaptee, "traverseXlinkExpiry", BigInteger.class);
             return seconds == null ? null : BigInteger.valueOf(60).multiply(seconds);
         }
+        
+		@Override
+		public String getSimplifyMethod() {
+			return eGet(adaptee, "simplifyMethod", String.class);
+		}
+
+		@Override
+		public void setSimplifyMethod(String simplifyMethod) {
+			eSet(adaptee, "simplifyMethod", String.class);
+			
+		}
     }
 
     public static class WFS20 extends GetFeatureRequest {
@@ -265,6 +280,17 @@ public abstract class GetFeatureRequest extends RequestObject {
         public BigInteger getResolveTimeOut() {
             return eGet(adaptee, "resolveTimeOut", BigInteger.class);
         }
+
+		@Override
+		public String getSimplifyMethod() {
+			return eGet(adaptee, "simplifyMethod", String.class);
+		}
+
+		@Override
+		public void setSimplifyMethod(String simplifyMethod) {
+			eSet(adaptee, "simplifyMethod", String.class);
+			
+		}
 
     }
 }

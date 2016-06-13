@@ -40,6 +40,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import net.opengis.wfs.FeatureCollectionType;
+import net.opengis.wfs.impl.GetFeatureTypeImpl;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
@@ -120,8 +121,15 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         List featureCollections = results.getFeature();
 
         int numDecimals = getNumDecimals(featureCollections, geoServer, catalog);
-
+        net.opengis.wfs.impl.GetFeatureTypeImpl impl = (GetFeatureTypeImpl) getFeature.getParameters()[0];
+      
+        String className = getFeature.getParameters()[0].getClass().getName();
+        int count = getFeature.getParameters().length;
+        System.out.println(className+"------------"+count);
+        
+        
         GetFeatureRequest request = GetFeatureRequest.adapt(getFeature.getParameters()[0]);
+        System.out.println("Simplify method = "+request.getSimplifyMethod());
 
         // round up the info objects for each feature collection
         HashMap<String, Set<ResourceInfo>> ns2metas = new HashMap<String, Set<ResourceInfo>>();

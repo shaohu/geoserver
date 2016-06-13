@@ -22,6 +22,7 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
     protected boolean encodeFeatureMember = false;    
     protected boolean hitsIgnoreMaxFeatures = false;
     protected List<String> srs = new ArrayList<String>();
+    protected String simplifyMethod = "none";
     
     public WFSInfoImpl() {
     }
@@ -71,6 +72,7 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
     public void setCanonicalSchemaLocation(boolean canonicalSchemaLocation) {
         this.canonicalSchemaLocation = canonicalSchemaLocation;
     }
+    
 
     /* 
      * @see org.geoserver.wfs.WFSInfo#isEncodingFeatureMember()
@@ -114,6 +116,13 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
     public void setSRS(List<String> srs) {
         this.srs = srs;
     }
+    
+    /**
+     * Added by hu shao hu.shao@asu.edu
+     */
+	public String getSimplifyMethod() {
+		return this.simplifyMethod;
+	}
 
     @Override
     public int hashCode() {
@@ -167,4 +176,5 @@ public class WFSInfoImpl extends ServiceInfoImpl implements WFSInfo {
         
         return true;
     }
+
 }

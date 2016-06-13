@@ -128,11 +128,20 @@ public abstract class RequestObject {
         eSet(adaptee, "outputFormat", outputFormat);
     }
     
+    public String getSimplifyMethod(){
+    	return eGet(adaptee, "simplifyMethod", String.class);
+    }
+    
+    public void setSimplifyMethod(String simplifyMethod){
+    	eSet(adaptee, "simplifyMethod", simplifyMethod);
+    }
+    
     //
     // helpers
     //
     protected <T> T eGet(Object obj, String property, Class<T> type) {
         String[] props = property.split("\\.");
+        System.out.println("try e-get ==="+property);
         for (String prop : props) {
             if (obj == null) {
                 return null;

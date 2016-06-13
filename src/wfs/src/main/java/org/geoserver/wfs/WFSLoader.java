@@ -21,7 +21,6 @@ public class WFSLoader extends LegacyServiceLoader<WFSInfo> {
     
     public WFSInfo load(LegacyServicesReader reader, GeoServer geoServer)
             throws Exception {
-        
         WFSInfoImpl wfs = new WFSInfoImpl();
         wfs.setId( "wfs" );
         
@@ -46,6 +45,11 @@ public class WFSLoader extends LegacyServiceLoader<WFSInfo> {
         Boolean hitsIgnoreMaxFeatures = (Boolean) properties.get( "hitsIgnoreMaxFeatures");
         if (hitsIgnoreMaxFeatures != null) {
             wfs.setHitsIgnoreMaxFeatures( hitsIgnoreMaxFeatures );
+        }
+        
+        String simplifyMethod = (String) properties.get( "simplifyMethod");
+        if (simplifyMethod != null) {
+            wfs.setSimplifyMethod(simplifyMethod);
         }
         
         //gml2
