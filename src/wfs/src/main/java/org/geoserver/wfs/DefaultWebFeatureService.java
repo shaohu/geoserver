@@ -118,7 +118,6 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
         throws WFSException {
         GetFeature getFeature = new GetFeature(getServiceInfo(), catalog);
         getFeature.setFilterFactory(filterFactory);
-
         return getFeature.run(new GetFeatureRequest.WFS11(request));
     }
 

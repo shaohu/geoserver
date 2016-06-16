@@ -52,6 +52,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSInfo;
+import org.geoserver.wfs.kvp.GetFeatureTypeImplExt;
 import org.geoserver.wfs.request.FeatureCollectionResponse;
 import org.geoserver.wfs.request.GetFeatureRequest;
 import org.geoserver.wfs.request.Query;
@@ -121,15 +122,14 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         List featureCollections = results.getFeature();
 
         int numDecimals = getNumDecimals(featureCollections, geoServer, catalog);
-        net.opengis.wfs.impl.GetFeatureTypeImpl impl = (GetFeatureTypeImpl) getFeature.getParameters()[0];
+        GetFeatureTypeImplExt impl = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
       
         String className = getFeature.getParameters()[0].getClass().getName();
         int count = getFeature.getParameters().length;
-        System.out.println(className+"------------"+count);
+        System.out.println(getFeature.getClass().getName()+"-------------"+className+"------------"+count+"-----------------"+impl.getSimpifyMethod());
         
         
         GetFeatureRequest request = GetFeatureRequest.adapt(getFeature.getParameters()[0]);
-        System.out.println("Simplify method = "+request.getSimplifyMethod());
 
         // round up the info objects for each feature collection
         HashMap<String, Set<ResourceInfo>> ns2metas = new HashMap<String, Set<ResourceInfo>>();

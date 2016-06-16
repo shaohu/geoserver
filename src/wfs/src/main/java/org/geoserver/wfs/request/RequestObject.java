@@ -128,14 +128,6 @@ public abstract class RequestObject {
         eSet(adaptee, "outputFormat", outputFormat);
     }
     
-    public String getSimplifyMethod(){
-    	return eGet(adaptee, "simplifyMethod", String.class);
-    }
-    
-    public void setSimplifyMethod(String simplifyMethod){
-    	eSet(adaptee, "simplifyMethod", simplifyMethod);
-    }
-    
     //
     // helpers
     //

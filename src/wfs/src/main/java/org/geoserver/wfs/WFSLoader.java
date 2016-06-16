@@ -47,10 +47,6 @@ public class WFSLoader extends LegacyServiceLoader<WFSInfo> {
             wfs.setHitsIgnoreMaxFeatures( hitsIgnoreMaxFeatures );
         }
         
-        String simplifyMethod = (String) properties.get( "simplifyMethod");
-        if (simplifyMethod != null) {
-            wfs.setSimplifyMethod(simplifyMethod);
-        }
         
         //gml2
         GMLInfo gml = new GMLInfoImpl();

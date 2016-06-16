@@ -74,6 +74,8 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 
     public GetFeatureKvpRequestReader(Class requestBean, Catalog catalog, FilterFactory filterFactory) {
         this(requestBean, WfsFactory.eINSTANCE, catalog, filterFactory);
+    	System.out.println("GetFeatureKvpRequestReader intilized !!!!!!!!!!!!!!!!!!!!!!!!!!");
+    	System.out.println(requestBean.getName());
     }
 
     public GetFeatureKvpRequestReader(Class requestBean, EFactory factory, Catalog catalog, 
@@ -93,11 +95,27 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
             kvp.put("startIndex", 
                 new NumericKvpParser(null, BigInteger.class).parse((String)rawKvp.get("startIndex")));
         }
+        Iterator iterator = rawKvp.keySet().iterator();
+        while(iterator.hasNext()){
+        	System.out.println(iterator.next().toString()+"  ooooooooooooooooooooooooo");
+        }
         
+        request = new GetFeatureTypeImplExt();
+		if(rawKvp.containsKey("simplifyMethod")){
+			((GetFeatureTypeImplExt)request).setSimpifyMethod(rawKvp.get("simplifyMethod").toString());
+		}	
+        System.out.println(request.getClass().getName()+"ppppppppppppppppppp");
+      
         request = super.read(request, kvp, rawKvp);
         
         //get feature has some additional parsing requirements
         EObject eObject = (EObject) request;
+        
+//        EMFUtils.set(eObject, "simplifyMethod", "DP");
+//        Object value = EMFUtils.get(eObject, "simplifyMethod");
+//        System.out.println("the set value of simplifyMethod is " + value +"qqqqqqqqqqqqqqqqqq");
+        // there is no implemented methods in "net.opengis.wfs.impl.GetFeatureTypeImpl" which support the set of additional "simplifyMethod"
+        
 
         // make sure the filter is specified in just one way
         ensureMutuallyExclusive(kvp, new String[] { "featureId", "resourceId", "filter", "bbox", "cql_filter" }, eObject);
@@ -328,7 +346,7 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 
             req.setViewParams(viewParams);
         }
-
+        
         return request;
     }
 
