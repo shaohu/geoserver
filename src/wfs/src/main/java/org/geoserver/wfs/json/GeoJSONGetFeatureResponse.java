@@ -27,6 +27,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.format.ext.TimeUsedForDataPreparingExport;
+import org.geoserver.wfs.kvp.GetFeatureTypeImplExt;
 import org.geoserver.wfs.request.FeatureCollectionResponse;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
@@ -99,6 +100,11 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
     protected void write(FeatureCollectionResponse featureCollection, OutputStream output,
             Operation describeFeatureType) throws IOException {
     	Date date_begin = new Date();
+    	
+    	GetFeatureTypeImplExt impl = (GetFeatureTypeImplExt) describeFeatureType.getParameters()[0];
+    	String className = impl.getClass().getName();
+        int count = describeFeatureType.getParameters().length;
+        System.out.println(describeFeatureType.getClass().getName()+"-------------"+className+"------------"+count+"-----------------"+impl.getSimpifyMethod()+"~~~~~~but this is in the Json implemetation...");
 
         int numDecimals = getNumDecimals(featureCollection.getFeature(), gs, gs.getCatalog());
 

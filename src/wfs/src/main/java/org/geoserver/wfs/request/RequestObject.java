@@ -133,7 +133,6 @@ public abstract class RequestObject {
     //
     protected <T> T eGet(Object obj, String property, Class<T> type) {
         String[] props = property.split("\\.");
-        System.out.println("try e-get ==="+property);
         for (String prop : props) {
             if (obj == null) {
                 return null;

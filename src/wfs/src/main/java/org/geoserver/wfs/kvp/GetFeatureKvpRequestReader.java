@@ -72,10 +72,14 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
      */
     FilterFactory filterFactory;
 
+    /**
+     * The instance of this class will be initialized at the beginning when GeoServer is activated.
+     * @param requestBean
+     * @param catalog
+     * @param filterFactory
+     */
     public GetFeatureKvpRequestReader(Class requestBean, Catalog catalog, FilterFactory filterFactory) {
         this(requestBean, WfsFactory.eINSTANCE, catalog, filterFactory);
-    	System.out.println("GetFeatureKvpRequestReader intilized !!!!!!!!!!!!!!!!!!!!!!!!!!");
-    	System.out.println(requestBean.getName());
     }
 
     public GetFeatureKvpRequestReader(Class requestBean, EFactory factory, Catalog catalog, 
@@ -95,16 +99,19 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
             kvp.put("startIndex", 
                 new NumericKvpParser(null, BigInteger.class).parse((String)rawKvp.get("startIndex")));
         }
-        Iterator iterator = rawKvp.keySet().iterator();
-        while(iterator.hasNext()){
-        	System.out.println(iterator.next().toString()+"  ooooooooooooooooooooooooo");
-        }
+//        Iterator iterator = rawKvp.keySet().iterator();
+//        while(iterator.hasNext()){
+//        	System.out.println(iterator.next().toString()+"  ooooooooooooooooooooooooo");
+//        }
         
+        // here we new a instance of GetFeatureTypeImplExt instead the default GetFeatureTypeImpl, and some new variables will be stored in this class.
         request = new GetFeatureTypeImplExt();
 		if(rawKvp.containsKey("simplifyMethod")){
 			((GetFeatureTypeImplExt)request).setSimpifyMethod(rawKvp.get("simplifyMethod").toString());
+			System.out.println("simplify method detected = " + rawKvp.get("simplifyMethod").toString());
+	        System.out.println("00000000000000000000 request parameter is read here 00000000000000000000");
 		}	
-        System.out.println(request.getClass().getName()+"ppppppppppppppppppp");
+//        System.out.println(request.getClass().getName()+"ppppppppppppppppppp");
       
         request = super.read(request, kvp, rawKvp);
         

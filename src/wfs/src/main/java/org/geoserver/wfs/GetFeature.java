@@ -30,6 +30,7 @@ import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ResourcePool;
 import org.geoserver.feature.TypeNameExtractingVisitor;
+import org.geoserver.function.IsInstanceOf;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
 import org.geoserver.ows.URLMangler.URLType;
@@ -43,7 +44,9 @@ import org.geoserver.wfs.request.Query;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Join;
+import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.factory.Hints;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
@@ -61,6 +64,7 @@ import org.geotools.referencing.CRS;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.Feature;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.AttributeDescriptor;
 import org.opengis.feature.type.FeatureType;
@@ -228,10 +232,11 @@ public class GetFeature {
     public FeatureCollectionResponse run(GetFeatureRequest request)
         throws WFSException {
         List<Query> queries = request.getQueries();
-
+        
         if (queries.isEmpty()) {
             throw new WFSException(request, "No query specified");
         }
+        
 
         //stored queries, preprocess compile any stored queries into actual query objects
         processStoredQueries(request);

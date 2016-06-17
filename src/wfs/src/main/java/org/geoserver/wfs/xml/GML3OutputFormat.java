@@ -58,16 +58,24 @@ import org.geoserver.wfs.request.GetFeatureRequest;
 import org.geoserver.wfs.request.Query;
 import org.geoserver.wfs.xml.v1_1_0.WFS;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
+import org.geotools.data.crs.ReprojectFeatureResults;
+import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.NameImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeImpl;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
+import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.w3c.dom.Document;
 
+/**
+ * modified by Hu Shao on Jun/16/2016
+ * @author hushao
+ *
+ */
 public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     
     /**
@@ -102,7 +110,6 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     
     public GML3OutputFormat(Set<String> outputFormats, GeoServer geoServer, WFSConfiguration configuration) {
         super(geoServer, outputFormats);
-
         this.geoServer = geoServer;
         this.catalog = geoServer.getCatalog();
         
@@ -120,14 +127,32 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     protected void write(FeatureCollectionResponse results, OutputStream output, Operation getFeature)
             throws ServiceException, IOException, UnsupportedEncodingException {
         List featureCollections = results.getFeature();
-
-        int numDecimals = getNumDecimals(featureCollections, geoServer, catalog);
-        GetFeatureTypeImplExt impl = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
-      
-        String className = getFeature.getParameters()[0].getClass().getName();
-        int count = getFeature.getParameters().length;
-        System.out.println(getFeature.getClass().getName()+"-------------"+className+"------------"+count+"-----------------"+impl.getSimpifyMethod());
         
+        for(int i=0; i<featureCollections.size(); i++){
+     	   System.out.println(featureCollections.get(i).getClass().getName()+"~~~~~~~~~~~~~~~~");
+     	   if(featureCollections.get(i) instanceof org.geotools.data.crs.ReprojectFeatureResults){
+     		   org.geotools.data.crs.ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections.get(i);
+     		   SimpleFeatureIterator features = reprojectFeatureResults.features();
+     		   while(features.hasNext()){
+     			   SimpleFeature next = features.next();
+     			   System.out.println(next.getID());
+     			   System.out.println(next.getClass().getName());
+     			   System.out.println(next.getDefaultGeometry().getClass().getName());
+     			   next.setDefaultGeometry(next.getDefaultGeometry());
+     		   }
+     	   }
+        }
+        
+        
+//        if(true){
+//        	throw new NoClassDefFoundError("trace back the method");
+//        }
+        
+        int numDecimals = getNumDecimals(featureCollections, geoServer, catalog);
+        
+        
+        GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
+        System.out.println("00000000000000000000 output format write function is called here 00000000000000000000");
         
         GetFeatureRequest request = GetFeatureRequest.adapt(getFeature.getParameters()[0]);
 
