@@ -71,6 +71,10 @@ import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.w3c.dom.Document;
 
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
+import com.vividsolutions.jts.simplify.TopologyPreservingSimplifier;
+
 /**
  * modified by Hu Shao on Jun/16/2016
  * @author hushao
@@ -127,32 +131,42 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     protected void write(FeatureCollectionResponse results, OutputStream output, Operation getFeature)
             throws ServiceException, IOException, UnsupportedEncodingException {
         List featureCollections = results.getFeature();
-        
-        for(int i=0; i<featureCollections.size(); i++){
-     	   System.out.println(featureCollections.get(i).getClass().getName()+"~~~~~~~~~~~~~~~~");
-     	   if(featureCollections.get(i) instanceof org.geotools.data.crs.ReprojectFeatureResults){
-     		   org.geotools.data.crs.ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections.get(i);
-     		   SimpleFeatureIterator features = reprojectFeatureResults.features();
-     		   while(features.hasNext()){
-     			   SimpleFeature next = features.next();
-     			   System.out.println(next.getID());
-     			   System.out.println(next.getClass().getName());
-     			   System.out.println(next.getDefaultGeometry().getClass().getName());
-     			   next.setDefaultGeometry(next.getDefaultGeometry());
-     		   }
-     	   }
+        GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
+        if(implExt.getSimpifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPILIFYMETHOD_DP))
+        {
+        	double distanceTolerance = implExt.getSimpilifyDistanceTolerance();
+        	for(int i=0; i<featureCollections.size(); i++){
+          	   if(featureCollections.get(i) instanceof org.geotools.data.crs.ReprojectFeatureResults){
+          		   org.geotools.data.crs.ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections.get(i);
+          		   SimpleFeatureIterator features = reprojectFeatureResults.features();
+          		   while(features.hasNext()){
+          			   SimpleFeature next = features.next();
+          			   Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
+        			   Geometry simplify = DouglasPeuckerSimplifier.simplify(defaultGeometry, distanceTolerance);
+        			   next.setDefaultGeometry(simplify);
+        			   System.out.println("DP simplify tolerance = " + distanceTolerance+ "-" + defaultGeometry.getNumPoints() + "-" + ((Geometry)next.getDefaultGeometry()).getNumPoints());
+          		   }
+          	   }
+             }
         }
-        
-        
-//        if(true){
-//        	throw new NoClassDefFoundError("trace back the method");
-//        }
+        else if (implExt.getSimpifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPILIFYMETHOD_TP)) {
+        	double distanceTolerance = implExt.getSimpilifyDistanceTolerance();
+        	for(int i=0; i<featureCollections.size(); i++){
+          	   if(featureCollections.get(i) instanceof org.geotools.data.crs.ReprojectFeatureResults){
+          		   org.geotools.data.crs.ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections.get(i);
+          		   SimpleFeatureIterator features = reprojectFeatureResults.features();
+          		   while(features.hasNext()){
+          			   SimpleFeature next = features.next();
+          			   Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
+          			   Geometry simplify = TopologyPreservingSimplifier.simplify(defaultGeometry, distanceTolerance);
+          			   next.setDefaultGeometry(simplify);
+          			   System.out.println("TP simplify tolerance = " + distanceTolerance+ "-" + defaultGeometry.getNumPoints() + "-" + ((Geometry)next.getDefaultGeometry()).getNumPoints());
+          		   }
+          	   }
+             }
+		}
         
         int numDecimals = getNumDecimals(featureCollections, geoServer, catalog);
-        
-        
-        GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
-        System.out.println("00000000000000000000 output format write function is called here 00000000000000000000");
         
         GetFeatureRequest request = GetFeatureRequest.adapt(getFeature.getParameters()[0]);
 

@@ -9,8 +9,17 @@ import net.opengis.wfs.impl.GetFeatureTypeImpl;
  *
  */
 public class GetFeatureTypeImplExt extends GetFeatureTypeImpl {
-	protected static final String SIMPILIFYMETHOD_DEFAULT = "NONE";
-	protected String simpilifyMethod = SIMPILIFYMETHOD_DEFAULT;
+	public static final String SIMPILIFYMETHOD_NONE = "NONE";
+	/**
+	 * the Douglas-Peucker algorithm
+	 */
+	public static final String SIMPILIFYMETHOD_DP = "DP";
+	/**
+	 * and topology-preserving simplification method 
+	 */
+	public static final String SIMPILIFYMETHOD_TP = "TP";
+	protected String simpilifyMethod = SIMPILIFYMETHOD_NONE;
+	protected double simpilifyDistanceTolerance = 0;
 	
 	public String getSimpifyMethod() {
         return this.simpilifyMethod;
@@ -22,13 +31,21 @@ public class GetFeatureTypeImplExt extends GetFeatureTypeImpl {
      */
 	public void setSimpifyMethod(String simpifyMethod) {
         if(simpifyMethod.equalsIgnoreCase("DP")){
-        	this.simpilifyMethod = "DP";
+        	this.simpilifyMethod = SIMPILIFYMETHOD_DP;
         }
         else if(simpifyMethod.equalsIgnoreCase("TP")){
-        	this.simpilifyMethod = "TP";
+        	this.simpilifyMethod = SIMPILIFYMETHOD_TP;
         }
         else{
-        	this.simpilifyMethod = SIMPILIFYMETHOD_DEFAULT;
+        	this.simpilifyMethod = SIMPILIFYMETHOD_NONE;
         }
     }
+	
+	public double getSimpilifyDistanceTolerance() {
+		return this.simpilifyDistanceTolerance;
+	}
+	
+	public void setSimpilifyDistanceTolerance(double value) {
+		this.simpilifyDistanceTolerance = value; 
+	}
 }

@@ -104,12 +104,31 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 //        	System.out.println(iterator.next().toString()+"  ooooooooooooooooooooooooo");
 //        }
         
-        // here we new a instance of GetFeatureTypeImplExt instead the default GetFeatureTypeImpl, and some new variables will be stored in this class.
+        /*
+         * ********************************************************************************************************************************************
+         * here we new a instance of GetFeatureTypeImplExt instead the default GetFeatureTypeImpl, and some new variables will be stored in this class.
+         * ********************************************************************************************************************************************
+         */
         request = new GetFeatureTypeImplExt();
-		if(rawKvp.containsKey("simplifyMethod")){
-			((GetFeatureTypeImplExt)request).setSimpifyMethod(rawKvp.get("simplifyMethod").toString());
-			System.out.println("simplify method detected = " + rawKvp.get("simplifyMethod").toString());
-	        System.out.println("00000000000000000000 request parameter is read here 00000000000000000000");
+		if(kvp.containsKey("simplifyMethod")){
+			GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt)request;
+			implExt.setSimpifyMethod((String)kvp.get("simplifyMethod"));
+			if(implExt.getSimpifyMethod() != GetFeatureTypeImplExt.SIMPILIFYMETHOD_NONE){
+				if(kvp.containsKey("simplifyDistanceTolerance")){
+					try{
+						Double distanceTolerance = (Double)(kvp.get("simplifyDistanceTolerance"));
+						implExt.setSimpilifyDistanceTolerance(distanceTolerance);
+					}catch(Exception e){
+						System.out.println("GetFeature url parameter parsing failed. simplifyDistanceTolerance, value= " + 
+								kvp.get("simplifyDistanceTolerance").toString()+" reason =" + e.getMessage());
+						implExt.setSimpifyMethod(GetFeatureTypeImplExt.SIMPILIFYMETHOD_NONE);
+					}	
+				}
+				else{
+					implExt.setSimpifyMethod(GetFeatureTypeImplExt.SIMPILIFYMETHOD_NONE);
+				}
+			}
+			System.out.println("simplify method detected = " + implExt.getSimpifyMethod() + " - " + implExt.getSimpilifyDistanceTolerance());
 		}	
 //        System.out.println(request.getClass().getName()+"ppppppppppppppppppp");
       
