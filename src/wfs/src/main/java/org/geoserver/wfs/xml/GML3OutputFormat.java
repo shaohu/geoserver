@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,6 +68,7 @@ import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.FeatureType;
 import org.opengis.feature.type.Name;
 import org.w3c.dom.Document;
@@ -130,41 +132,27 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 
     protected void write(FeatureCollectionResponse results, OutputStream output, Operation getFeature)
             throws ServiceException, IOException, UnsupportedEncodingException {
+    	GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
+    	results.setSimplifyMethod(implExt.getSimpifyMethod());
+    	results.setSimplifyDistanceTolerance(implExt.getSimpilifyDistanceTolerance());
+    	
         List featureCollections = results.getFeature();
-        GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
-        if(implExt.getSimpifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPILIFYMETHOD_DP))
-        {
-        	double distanceTolerance = implExt.getSimpilifyDistanceTolerance();
-        	for(int i=0; i<featureCollections.size(); i++){
-          	   if(featureCollections.get(i) instanceof org.geotools.data.crs.ReprojectFeatureResults){
-          		   org.geotools.data.crs.ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections.get(i);
-          		   SimpleFeatureIterator features = reprojectFeatureResults.features();
-          		   while(features.hasNext()){
-          			   SimpleFeature next = features.next();
-          			   Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
-        			   Geometry simplify = DouglasPeuckerSimplifier.simplify(defaultGeometry, distanceTolerance);
-        			   next.setDefaultGeometry(simplify);
-        			   System.out.println("DP simplify tolerance = " + distanceTolerance+ "-" + defaultGeometry.getNumPoints() + "-" + ((Geometry)next.getDefaultGeometry()).getNumPoints());
-          		   }
-          	   }
-             }
-        }
-        else if (implExt.getSimpifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPILIFYMETHOD_TP)) {
-        	double distanceTolerance = implExt.getSimpilifyDistanceTolerance();
-        	for(int i=0; i<featureCollections.size(); i++){
-          	   if(featureCollections.get(i) instanceof org.geotools.data.crs.ReprojectFeatureResults){
-          		   org.geotools.data.crs.ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections.get(i);
-          		   SimpleFeatureIterator features = reprojectFeatureResults.features();
-          		   while(features.hasNext()){
-          			   SimpleFeature next = features.next();
-          			   Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
-          			   Geometry simplify = TopologyPreservingSimplifier.simplify(defaultGeometry, distanceTolerance);
-          			   next.setDefaultGeometry(simplify);
-          			   System.out.println("TP simplify tolerance = " + distanceTolerance+ "-" + defaultGeometry.getNumPoints() + "-" + ((Geometry)next.getDefaultGeometry()).getNumPoints());
-          		   }
-          	   }
-             }
+        int totalSize = 0;
+        for (int i = 0; i < featureCollections.size(); i++) {
+			if (featureCollections.get(i) instanceof org.geotools.data.crs.ReprojectFeatureResults) {
+				org.geotools.data.crs.ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections
+						.get(i);
+				SimpleFeatureIterator features = reprojectFeatureResults.features();
+				while (features.hasNext()) {
+					SimpleFeature next = features.next();
+					Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
+					totalSize += defaultGeometry.getNumPoints();
+				}
+			}
 		}
+		
+		System.out.println("result point count ============= "+totalSize+"--------------");
+		
         
         int numDecimals = getNumDecimals(featureCollections, geoServer, catalog);
         
@@ -326,6 +314,22 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             encode(results, output, encoder);
         }
         
+        featureCollections = results.getFeature();
+        totalSize = 0;
+        for (int i = 0; i < featureCollections.size(); i++) {
+			if (featureCollections.get(i) instanceof org.geotools.data.crs.ReprojectFeatureResults) {
+				org.geotools.data.crs.ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections
+						.get(i);
+				SimpleFeatureIterator features = reprojectFeatureResults.features();
+				while (features.hasNext()) {
+					SimpleFeature next = features.next();
+					Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
+					totalSize += defaultGeometry.getNumPoints();
+				}
+			}
+		}
+		
+		System.out.println("result point count ============= "+totalSize+"*************");
     }
     
     protected void setNumDecimals(int numDecimals) {
