@@ -41,6 +41,7 @@ import org.geoserver.wfs.request.Lock;
 import org.geoserver.wfs.request.LockFeatureRequest;
 import org.geoserver.wfs.request.LockFeatureResponse;
 import org.geoserver.wfs.request.Query;
+import org.geoserver.wfs.response.HitsOutputFormat;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Join;
@@ -106,7 +107,10 @@ import org.opengis.filter.temporal.TContains;
 import org.opengis.filter.temporal.TEquals;
 import org.opengis.metadata.extent.GeographicBoundingBox;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
+import org.vfny.geoserver.global.GeoServerFeatureLocking;
 import org.xml.sax.helpers.NamespaceSupport;
+
+import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
 /**
  * Web Feature Service GetFeature operation.
  * <p>
@@ -232,7 +236,6 @@ public class GetFeature {
     public FeatureCollectionResponse run(GetFeatureRequest request)
         throws WFSException {
         List<Query> queries = request.getQueries();
-        
         if (queries.isEmpty()) {
             throw new WFSException(request, "No query specified");
         }
@@ -497,9 +500,10 @@ public class GetFeature {
                 if (joins != null) {
                     hints = new Hints(ResourcePool.JOINS, joins);
                 }
+                
                 FeatureSource<? extends FeatureType, ? extends Feature> source = 
                     primaryMeta.getFeatureSource(null, hints);
-
+                
                 // handle local maximum
                 int queryMaxFeatures = maxFeatures - count;
                 int metaMaxFeatures = maxFeatures(metas);
@@ -511,10 +515,11 @@ public class GetFeature {
                         queryMaxFeatures, source, request, allPropNames.get(0), viewParam,
                             joins, primaryTypeName, primaryAlias);
 
-                LOGGER.fine("Query is " + query + "\n To gt2: " + gtQuery);
+//              System.out.println("Query is " + query + "\n To gt2: " + gtQuery);
 
-                FeatureCollection<? extends FeatureType, ? extends Feature> features = getFeatures(request, source, gtQuery);
-
+              FeatureCollection<? extends FeatureType, ? extends Feature> features = getFeatures(request, source, gtQuery);
+                
+                
                 // For complex features, we need the targetCrs and version in scenario where we have
                 // a top level feature that does not contain a geometry(therefore no crs) and has a
                 // nested feature that contains geometry as its property.Furthermore it is possible
@@ -1073,7 +1078,8 @@ public class GetFeature {
         if (joins != null) {
             dataQuery.getJoins().addAll(joins);
         }
-
+        
+        
         //finally, set the hints
         dataQuery.setHints(hints);
 

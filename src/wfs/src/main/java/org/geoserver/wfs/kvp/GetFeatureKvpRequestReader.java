@@ -38,6 +38,7 @@ import org.geoserver.wfs.StoredQueryProvider;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.request.GetFeatureRequest;
+import org.geoserver.wfs.request.GetFeatureTypeImplExt;
 import org.geoserver.wfs.request.Query;
 import org.geoserver.wfs.request.GetFeatureRequest.WFS20;
 import org.geotools.geometry.jts.ReferencedEnvelope;
@@ -99,11 +100,6 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
             kvp.put("startIndex", 
                 new NumericKvpParser(null, BigInteger.class).parse((String)rawKvp.get("startIndex")));
         }
-//        Iterator iterator = rawKvp.keySet().iterator();
-//        while(iterator.hasNext()){
-//        	System.out.println(iterator.next().toString()+"  ooooooooooooooooooooooooo");
-//        }
-        
         /*
          * ********************************************************************************************************************************************
          * here we new a instance of GetFeatureTypeImplExt instead the default GetFeatureTypeImpl, and some new variables will be stored in this class.
@@ -112,37 +108,30 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
         request = new GetFeatureTypeImplExt();
 		if(kvp.containsKey("simplifyMethod")){
 			GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt)request;
-			implExt.setSimpifyMethod((String)kvp.get("simplifyMethod"));
-			if(implExt.getSimpifyMethod() != GetFeatureTypeImplExt.SIMPILIFYMETHOD_NONE){
+			implExt.setSimplifyMethod((String)kvp.get("simplifyMethod"));
+			if(implExt.getSimplifyMethod() != GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE){
 				if(kvp.containsKey("simplifyDistanceTolerance")){
 					try{
 						Double distanceTolerance = (Double)(kvp.get("simplifyDistanceTolerance"));
-						implExt.setSimpilifyDistanceTolerance(distanceTolerance);
+						implExt.setSimplifyDistanceTolerance(distanceTolerance);
 					}catch(Exception e){
 						System.out.println("GetFeature url parameter parsing failed. simplifyDistanceTolerance, value= " + 
 								kvp.get("simplifyDistanceTolerance").toString()+" reason =" + e.getMessage());
-						implExt.setSimpifyMethod(GetFeatureTypeImplExt.SIMPILIFYMETHOD_NONE);
+						implExt.setSimplifyMethod(GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE);
 					}	
 				}
 				else{
-					implExt.setSimpifyMethod(GetFeatureTypeImplExt.SIMPILIFYMETHOD_NONE);
+					implExt.setSimplifyMethod(GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE);
 				}
 			}
-			System.out.println("simplify method detected = " + implExt.getSimpifyMethod() + " - " + implExt.getSimpilifyDistanceTolerance());
+			System.out.println("simplify method detected = " + implExt.getSimplifyMethod() + " - " + implExt.getSimplifyDistanceTolerance());
 		}	
-//        System.out.println(request.getClass().getName()+"ppppppppppppppppppp");
       
         request = super.read(request, kvp, rawKvp);
         
         //get feature has some additional parsing requirements
         EObject eObject = (EObject) request;
         
-//        EMFUtils.set(eObject, "simplifyMethod", "DP");
-//        Object value = EMFUtils.get(eObject, "simplifyMethod");
-//        System.out.println("the set value of simplifyMethod is " + value +"qqqqqqqqqqqqqqqqqq");
-        // there is no implemented methods in "net.opengis.wfs.impl.GetFeatureTypeImpl" which support the set of additional "simplifyMethod"
-        
-
         // make sure the filter is specified in just one way
         ensureMutuallyExclusive(kvp, new String[] { "featureId", "resourceId", "filter", "bbox", "cql_filter" }, eObject);
 

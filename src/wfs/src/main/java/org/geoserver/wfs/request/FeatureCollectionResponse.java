@@ -16,10 +16,10 @@ import net.opengis.wfs20.Wfs20Factory;
 
 import org.eclipse.emf.ecore.EObject;
 import org.geoserver.wfs.WFSException;
-import org.geoserver.wfs.kvp.GetFeatureTypeImplExt;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.FeatureCollection;
+import org.geotools.feature.FeatureIterator;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 
@@ -81,81 +81,10 @@ public abstract class FeatureCollectionResponse extends RequestObject {
     public abstract Object unadapt(Class target);
 
     public List<FeatureCollection> getFeature() {
-        //alias
-    	int totalSizeSimple = 0;
-    	int totalSize = 0;
-    	List featureCollections = getFeatures();
-    	if(this.getSimplifyMethod()!=GetFeatureTypeImplExt.SIMPILIFYMETHOD_NONE){
-    		if(this.simplifiedFeatureCollections!=null){
-        		System.out.println("feature simplify request detected, use existing one +++++++++++++++++++++");
-    			return this.simplifiedFeatureCollections;
-    		}
-    		else{
-    			System.out.println("need to deal with simplify, "+this.getSimplifyMethod()+" - "+this.getSimplifyDistanceTolerance()+"++++++++++");
-        		if(this.getSimplifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPILIFYMETHOD_DP))
-                {
-                	double distanceTolerance = this.getSimplifyDistanceTolerance();
-                	for(int i=0; i<featureCollections.size(); i++){
-                  	   if(featureCollections.get(i) instanceof org.geotools.data.crs.ReprojectFeatureResults){
-                  		   org.geotools.data.crs.ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections.get(i);
-//                  		   FeatureCollection<SimpleFeatureType, SimpleFeature> origin = reprojectFeatureResults.getOrigin();
-//                  		   SimpleFeatureIterator features = reprojectFeatureResults.features();
-                  		 Iterator<SimpleFeature> features = reprojectFeatureResults.iterator();
-                  		   while(features.hasNext()){
-                  			   SimpleFeature next = features.next();
-                  			   Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
-                			   Geometry simplify = DouglasPeuckerSimplifier.simplify(defaultGeometry, distanceTolerance);
-                			   next.setDefaultGeometry(simplify);
-                			   totalSizeSimple += ((Geometry) next.getDefaultGeometry()).getNumPoints();
-//                			   System.out.println("DP simplify tolerance = " + distanceTolerance+ "-" + defaultGeometry.getNumPoints() + "-" + ((Geometry)next.getDefaultGeometry()).getNumPoints());
-                  		   }
-                  	   }
-                     }
-                }
-                else if (this.getSimplifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPILIFYMETHOD_TP)) {
-                	double distanceTolerance = this.getSimplifyDistanceTolerance();
-                	for(int i=0; i<featureCollections.size(); i++){
-                  	   if(featureCollections.get(i) instanceof org.geotools.data.crs.ReprojectFeatureResults){
-                  		   org.geotools.data.crs.ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections.get(i);
-                  		   SimpleFeatureIterator features = reprojectFeatureResults.features();
-                  		   while(features.hasNext()){
-                  			   SimpleFeature next = features.next();
-                  			   Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
-                  			   Geometry simplify = TopologyPreservingSimplifier.simplify(defaultGeometry, distanceTolerance);
-                  			   next.setDefaultGeometry(simplify);
-                			   totalSizeSimple += ((Geometry) next.getDefaultGeometry()).getNumPoints();
-//                  			   System.out.println("TP simplify tolerance = " + distanceTolerance+ "-" + defaultGeometry.getNumPoints() + "-" + ((Geometry)next.getDefaultGeometry()).getNumPoints());
-                  		   }
-                  	   }
-                     }
-        		}
-        		this.simplifiedFeatureCollections = featureCollections;
-    		}
-    	}
-    	
-    	
-    	
-    	
-		for (int i = 0; i < featureCollections.size(); i++) {
-			if (featureCollections.get(i) instanceof org.geotools.data.crs.ReprojectFeatureResults) {
-				org.geotools.data.crs.ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections
-						.get(i);
-				Iterator<SimpleFeature> features = reprojectFeatureResults.iterator();
-				while (features.hasNext()) {
-					SimpleFeature next = features.next();
-					Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
-					totalSize += defaultGeometry.getNumPoints();
-				}
-			}
-		}
-		
-		System.out.println("result point count ============= "+totalSize + "'''''"+ totalSizeSimple);
-		
-    	
-        return featureCollections;
+        return getFeatures();
     }
     
-    protected String simplifyMethod = GetFeatureTypeImplExt.SIMPILIFYMETHOD_NONE;
+    protected String simplifyMethod = GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE;
     protected double simplifyDistanceTolerance = 0;
     protected List simplifiedFeatureCollections = null; 
     
