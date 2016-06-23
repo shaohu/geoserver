@@ -157,7 +157,7 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
             GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) describeFeatureType.getParameters()[0];
             List<FeatureCollection> featureCollections = featureCollection.getFeature();
             if(implExt.getSimplifyMethod()!=GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE){
-    			System.out.println("Conduct geometry simplify in GML, "+implExt.getSimplifyMethod()+", "+implExt.getSimplifyDistanceTolerance()+"");
+    			System.out.println("Conduct geometry simplify in JSON, "+implExt.getSimplifyMethod()+", "+implExt.getSimplifyDistanceTolerance()+"");
     	        int totalSize = 0;
     	        int totalSizeSimple = 0;
     			ArrayList<SimpleFeatureCollection>featureCollectionsBuffer = new ArrayList<>();
@@ -205,11 +205,11 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
                   	   }
                      }
         		}
-        		results.getFeature().clear();
-        		results.getFeature().addAll(featureCollectionsBuffer);
+        		featureCollection.getFeature().clear();
+        		featureCollection.getFeature().addAll(featureCollectionsBuffer);
         		
 
-                featureCollections = results.getFeature(); 
+                featureCollections = featureCollection.getFeature(); 
                 for (int i = 0; i < featureCollections.size(); i++) {
         			if (featureCollections.get(i) instanceof SimplifiedSimpleFeatureCollection) {
         				SimplifiedSimpleFeatureCollection reprojectFeatureResults = (SimplifiedSimpleFeatureCollection) featureCollections.get(i);
