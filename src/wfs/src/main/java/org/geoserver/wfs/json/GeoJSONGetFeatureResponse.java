@@ -27,6 +27,7 @@ import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSInfo;
+import org.geoserver.wfs.format.ext.TimeUsedForDataGeneralizingExport;
 import org.geoserver.wfs.format.ext.TimeUsedForDataPreparingExport;
 import org.geoserver.wfs.format.simplify.SimplifiedSimpleFeatureCollection;
 import org.geoserver.wfs.request.FeatureCollectionResponse;
@@ -158,7 +159,8 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
             List<FeatureCollection> featureCollections = featureCollection.getFeature();
             if(implExt.getSimplifyMethod()!=GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE){
     			System.out.println("Conduct geometry simplify in JSON, "+implExt.getSimplifyMethod()+", "+implExt.getSimplifyDistanceTolerance()+"");
-    	        int totalSize = 0;
+    			long currentTime_beginSimplify = System.currentTimeMillis();
+    			int totalSize = 0;
     	        int totalSizeSimple = 0;
     			ArrayList<SimpleFeatureCollection>featureCollectionsBuffer = new ArrayList<>();
         		if(implExt.getSimplifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPLIFYMETHOD_DP)){
@@ -222,6 +224,7 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
         			}
         		}
         		System.out.println(String.format("Result point count: origin-%d, simplified-%d", totalSize, totalSizeSimple));
+        		TimeUsedForDataGeneralizingExport.timeUsedForDataGeneralizing = (int)(System.currentTimeMillis()-currentTime_beginSimplify);
         	}
 
             // execute should of set all the header information

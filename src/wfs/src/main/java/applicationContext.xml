@@ -655,6 +655,12 @@
 		<constructor-arg ref="geoServer"/>
 		<constructor-arg ref="xmlConfiguration-1.1"/>
 	</bean>
+	
+	<bean id="time-used-for-data-generalizing-OutputFormat" 
+		class="org.geoserver.wfs.format.ext.TimeUsedForDataGeneralizingExport">
+		<constructor-arg ref="geoServer"/>
+		<constructor-arg ref="xmlConfiguration-1.1"/>
+	</bean>
 
 	<!-- GetFeature JSONP -->
 	<bean id="geoJSONPGetFeatureResponse" class="org.geoserver.wfs.json.GeoJSONGetFeatureResponse">

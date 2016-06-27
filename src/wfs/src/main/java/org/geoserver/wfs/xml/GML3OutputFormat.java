@@ -54,6 +54,7 @@ import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSInfo;
+import org.geoserver.wfs.format.ext.TimeUsedForDataGeneralizingExport;
 import org.geoserver.wfs.format.simplify.SimplifiedSimpleFeatureCollection;
 import org.geoserver.wfs.request.FeatureCollectionResponse;
 import org.geoserver.wfs.request.GetFeatureRequest;
@@ -300,6 +301,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
         GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
         if(implExt.getSimplifyMethod()!=GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE){
 			System.out.println("Conduct geometry simplify in GML, "+implExt.getSimplifyMethod()+", "+implExt.getSimplifyDistanceTolerance()+"");
+			long currentTime_beginSimplify = System.currentTimeMillis();
 	        int totalSize = 0;
 	        int totalSizeSimple = 0;
 			ArrayList<SimpleFeatureCollection>featureCollectionsBuffer = new ArrayList<>();
@@ -364,6 +366,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     			}
     		}
     		System.out.println(String.format("Result point count: origin-%d, simplified-%d", totalSize, totalSizeSimple));
+    		TimeUsedForDataGeneralizingExport.timeUsedForDataGeneralizing = (int)(System.currentTimeMillis()-currentTime_beginSimplify);
     	}
         
         setAdditionalSchemaLocations(encoder, request, wfs);
