@@ -308,8 +308,8 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     		if(implExt.getSimplifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPLIFYMETHOD_DP)){
             	double distanceTolerance = implExt.getSimplifyDistanceTolerance();
             	for(int i=0; i<featureCollections.size(); i++){
-              	   if(featureCollections.get(i) instanceof ReprojectFeatureResults){
-              		   ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections.get(i);
+              	   if(featureCollections.get(i) instanceof SimpleFeatureCollection){  // could be ReprojectFeatureResults or ForceCoordinateSystemFeatureResults 
+              		 SimpleFeatureCollection reprojectFeatureResults = (SimpleFeatureCollection) featureCollections.get(i);
               		   SimplifiedSimpleFeatureCollection collectionNew = new SimplifiedSimpleFeatureCollection();
               		   featureCollectionsBuffer.add(collectionNew);
               		   collectionNew.setBounds(reprojectFeatureResults.getBounds());
@@ -352,7 +352,8 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     		results.getFeature().clear();
     		results.getFeature().addAll(featureCollectionsBuffer);
     		
-
+    		
+    		int totalFeatureCount = 0;
             featureCollections = results.getFeature(); 
             for (int i = 0; i < featureCollections.size(); i++) {
     			if (featureCollections.get(i) instanceof SimplifiedSimpleFeatureCollection) {
@@ -362,10 +363,11 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     					SimpleFeature next = features.next();
     					Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
     					totalSizeSimple += defaultGeometry.getNumPoints();
+             			totalFeatureCount += 1;
     				}
     			}
     		}
-    		System.out.println(String.format("Result point count: origin-%d, simplified-%d", totalSize, totalSizeSimple));
+            System.out.println(String.format("total feature count: %d; Result point count: origin-%d, simplified-%d", totalFeatureCount, totalSize, totalSizeSimple));
     		TimeUsedForDataGeneralizingExport.timeUsedForDataGeneralizing = (int)(System.currentTimeMillis()-currentTime_beginSimplify);
     	}
         

@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.apache.xml.resolver.readers.TextCatalogReader;
 import org.geoserver.config.GeoServer;
 import org.geoserver.ows.Dispatcher;
 import org.geoserver.ows.Request;
@@ -32,6 +33,7 @@ import org.geoserver.wfs.format.ext.TimeUsedForDataPreparingExport;
 import org.geoserver.wfs.format.simplify.SimplifiedSimpleFeatureCollection;
 import org.geoserver.wfs.request.FeatureCollectionResponse;
 import org.geoserver.wfs.request.GetFeatureTypeImplExt;
+import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
@@ -130,10 +132,12 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
         boolean hasGeom = false;
 
         // get feature count for request
+        // If the bbox is used, the result feature count will be changed here, which means the filter work is done before this step
         BigInteger totalNumberOfFeatures = featureCollection.getTotalNumberOfFeatures();
         BigInteger featureCount = (totalNumberOfFeatures != null && totalNumberOfFeatures.longValue() < 0)
                 ? null : totalNumberOfFeatures;
-
+        System.out.println("total feature count for Json collection is "+featureCount);
+        
         try {
             osw = new OutputStreamWriter(output, gs.getGlobal().getSettings().getCharset());
             outWriter = new BufferedWriter(osw);
@@ -166,8 +170,8 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
         		if(implExt.getSimplifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPLIFYMETHOD_DP)){
                 	double distanceTolerance = implExt.getSimplifyDistanceTolerance();
                 	for(int i=0; i<featureCollections.size(); i++){
-                  	   if(featureCollections.get(i) instanceof ReprojectFeatureResults){
-                  		   ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections.get(i);
+                  	   if(featureCollections.get(i) instanceof SimpleFeatureCollection){  // could be ReprojectFeatureResults or ForceCoordinateSystemFeatureResults 
+                  		 SimpleFeatureCollection reprojectFeatureResults = (SimpleFeatureCollection) featureCollections.get(i);
                   		   SimplifiedSimpleFeatureCollection collectionNew = new SimplifiedSimpleFeatureCollection();
                   		   featureCollectionsBuffer.add(collectionNew);
                   		   collectionNew.setBounds(reprojectFeatureResults.getBounds());
@@ -182,6 +186,8 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
                 			   next.setDefaultGeometry(simplify);
                 			   collectionNew.addSimpleFeature(next);
                   		   }
+                  	   }else{
+                  		   System.err.println("Unsupported data type!! " + (featureCollections.get(i).getClass().getName()));
                   	   }
                      }
                 }
@@ -211,6 +217,7 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
         		featureCollection.getFeature().addAll(featureCollectionsBuffer);
         		
 
+    	        int totalFeatureCount = 0;
                 featureCollections = featureCollection.getFeature(); 
                 for (int i = 0; i < featureCollections.size(); i++) {
         			if (featureCollections.get(i) instanceof SimplifiedSimpleFeatureCollection) {
@@ -220,10 +227,11 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
         					SimpleFeature next = features.next();
         					Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
         					totalSizeSimple += defaultGeometry.getNumPoints();
+                 			totalFeatureCount += 1;
         				}
         			}
         		}
-        		System.out.println(String.format("Result point count: origin-%d, simplified-%d", totalSize, totalSizeSimple));
+        		System.out.println(String.format("total feature count: %d; Result point count: origin-%d, simplified-%d", totalFeatureCount, totalSize, totalSizeSimple));
         		TimeUsedForDataGeneralizingExport.timeUsedForDataGeneralizing = (int)(System.currentTimeMillis()-currentTime_beginSimplify);
         	}
 

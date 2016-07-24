@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- 
- Copyright (C) 2015 - Open Source Geospatial Foundation. All rights reserved.
+<!--
+ Copyright (C) 2016 - Open Source Geospatial Foundation. All rights reserved.
  This code is licensed under the GPL 2.0 license, available at the root
  application directory.
  -->
@@ -73,24 +73,6 @@
     <!-- release repository used by geotools (and third-party dependencies) -->
   </repository>
    
-  <repository>
-    <id>maven-restlet</id>
-    <name>Restlet Maven Repository</name>
-    <url>http://maven.restlet.org</url>
-    <snapshots>
-      <enabled>false</enabled>
-    </snapshots>
-  </repository>
-
-  <repository>
-    <id>hibspat</id>
-    <name>Hibernate Spatial</name>
-    <url>http://www.hibernatespatial.org/repository</url>
-    <snapshots>
-      <enabled>true</enabled>
-    </snapshots>
-   </repository>
-
    <repository>
       <id>geosolutions</id>
       <name>geosolutions repository</name>
@@ -186,10 +168,10 @@
     <artifactId>gs-gwc</artifactId>
     <version>${gs.version}</version>
     <exclusions>
-    	<exclusion>
-    		<groupId>net.sf.json-lib</groupId>
-      		<artifactId>json-lib</artifactId>
-    	</exclusion>
+      <exclusion>
+        <groupId>net.sf.json-lib</groupId>
+          <artifactId>json-lib</artifactId>
+      </exclusion>
     </exclusions>
    </dependency>
    <dependency>
@@ -744,7 +726,7 @@
    <dependency>
     <groupId>commons-pool</groupId>
     <artifactId>commons-pool</artifactId>
-    <version>1.5.3</version>
+    <version>1.5.4</version>
    </dependency>
    <dependency>
     <groupId>commons-collections</groupId>
@@ -757,14 +739,14 @@
     <version>1.4</version>
    </dependency>
    <dependency>
-	<groupId>org.apache.commons</groupId>
-	<artifactId>commons-vfs2</artifactId>
-	<version>2.0</version>
+  <groupId>org.apache.commons</groupId>
+  <artifactId>commons-vfs2</artifactId>
+  <version>2.0</version>
    </dependency>
    <dependency>
-	<groupId>org.apache.commons</groupId>
-	<artifactId>commons-exec</artifactId>
-	<version>1.3</version>
+  <groupId>org.apache.commons</groupId>
+  <artifactId>commons-exec</artifactId>
+  <version>1.3</version>
   </dependency>
    <dependency>
     <groupId>org.springframework</groupId>
@@ -889,7 +871,7 @@
      <groupId>org.apache.wicket</groupId>
      <artifactId>wicket-spring</artifactId>
      <version>${wicket.version}</version>
-   </dependency>			
+   </dependency>      
    <dependency>
      <groupId>org.apache.wicket</groupId>
      <artifactId>wicket-extensions</artifactId>
@@ -1118,30 +1100,30 @@
             <artifactId>xercesImpl</artifactId>
             <version>2.11.0</version>
         </dependency>
-	<dependency>
-	  <groupId>javax.jms</groupId>
-	  <artifactId>jms-api</artifactId>
-	  <version>1.1-rev-1</version>
-	</dependency>    
-	<!-- Needed to solve NamespaceHandler class org.apache.xbean.spring.context.v2.XBeanNamespaceHandler 
-	  for namespace [http://activemq.apache.org/schema/core] not found ClassNotFoundException: 
-	  org.apache.xbean.spring.context.v2.XBeanNamespaceHandler<br> ref: http://codebrane.com/blog/?p=823 -->
-	<dependency>
-		<groupId>org.apache.xbean</groupId>
-		<artifactId>xbean-spring</artifactId>
-		<version>3.5</version>
-		<exclusions>
-		  <exclusion>
-		<groupId>commons-logging</groupId>
-		<artifactId>commons-logging</artifactId>
-		  </exclusion>
-		</exclusions>
-	</dependency>  
-	<dependency>
-		<groupId>it.geosolutions</groupId>
-		<artifactId>geoserver-manager</artifactId>
-		<version>1.5.1</version>
-		<scope>test</scope>
+  <dependency>
+    <groupId>javax.jms</groupId>
+    <artifactId>jms-api</artifactId>
+    <version>1.1-rev-1</version>
+  </dependency>    
+  <!-- Needed to solve NamespaceHandler class org.apache.xbean.spring.context.v2.XBeanNamespaceHandler 
+    for namespace [http://activemq.apache.org/schema/core] not found ClassNotFoundException: 
+    org.apache.xbean.spring.context.v2.XBeanNamespaceHandler<br> ref: http://codebrane.com/blog/?p=823 -->
+  <dependency>
+    <groupId>org.apache.xbean</groupId>
+    <artifactId>xbean-spring</artifactId>
+    <version>3.5</version>
+    <exclusions>
+      <exclusion>
+    <groupId>commons-logging</groupId>
+    <artifactId>commons-logging</artifactId>
+      </exclusion>
+    </exclusions>
+  </dependency>  
+  <dependency>
+    <groupId>it.geosolutions</groupId>
+    <artifactId>geoserver-manager</artifactId>
+    <version>1.5.1</version>
+    <scope>test</scope>
     </dependency>
     <!-- Pinned transitive dependency of gs-gwc-s3 via gwc-aws-s3 via aws-java-sdk-core. -->
     <!-- Other code should use Java 8 JSR 310 java.time instead of joda-time. -->
@@ -1275,6 +1257,8 @@
      <include>**/*.tiff</include>
      <include>**/*.zip</include>
      <include>**/*.json</include>
+     <include>**/*.nc</include>
+     <include>**/*.grib2</include>
     </includes>
     <excludes>
      <exclude>**/doc-files/**</exclude>
@@ -1418,32 +1402,32 @@
    </plugin>
 
    <plugin>
-	<artifactId>maven-jar-plugin</artifactId>
+  <artifactId>maven-jar-plugin</artifactId>
     <version>2.4</version>
-	<executions>
-		<execution>
-			<phase>package</phase>
-			<goals>
-				<goal>test-jar</goal>
-			</goals>
-		</execution>
-	</executions>
-	<configuration>
-		<archive>
-			<manifest>
-				<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-				<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-			</manifest>
-			<manifestEntries>
-				<GeoServerModule>core</GeoServerModule>
-				<Application-Name>${project.build.finalname}</Application-Name>
-				<Project-Version>${project.version}</Project-Version>
-				<Iteration-Name>${iteration}</Iteration-Name>
-				<Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
-				<Git-Revision>${build.commit.id}</Git-Revision>
-			</manifestEntries>
-		</archive>
-	</configuration>
+  <executions>
+    <execution>
+      <phase>package</phase>
+      <goals>
+        <goal>test-jar</goal>
+      </goals>
+    </execution>
+  </executions>
+  <configuration>
+    <archive>
+      <manifest>
+        <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+        <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+      </manifest>
+      <manifestEntries>
+        <GeoServerModule>core</GeoServerModule>
+        <Application-Name>${project.build.finalname}</Application-Name>
+        <Project-Version>${project.version}</Project-Version>
+        <Iteration-Name>${iteration}</Iteration-Name>
+        <Build-Timestamp>${maven.build.timestamp}</Build-Timestamp>
+        <Git-Revision>${build.commit.id}</Git-Revision>
+      </manifestEntries>
+    </archive>
+  </configuration>
    </plugin>
 
    <plugin>
@@ -1458,8 +1442,8 @@
      <execution>
       <id>attach-sources</id>
       <goals>
-       <goal>jar</goal>
-       <goal>test-jar</goal>
+       <goal>jar-no-fork</goal>
+       <goal>test-jar-no-fork</goal>
       </goals>
      </execution>
     </executions>
@@ -1483,7 +1467,7 @@
        <skipPoms>false</skipPoms>
        <verbose>false</verbose>
        <injectAllReactorProjects>true</injectAllReactorProjects>
-       <runOnlyOnce>true</runOnlyOnce>
+       <runOnlyOnce>${git.commit.runOnlyOnce}</runOnlyOnce>
        <!--
        In order to use native git (3+ times faster) add the following in ~/.m2/settings.xml
        <profiles>
@@ -1750,7 +1734,7 @@
   <wicket.version>7.1.0</wicket.version>
   <ant.version>1.8.4</ant.version>
   <imageio-ext.version>1.1.13</imageio-ext.version>
-  <jaiext.version>1.0.9</jaiext.version>
+  <jaiext.version>1.0.11</jaiext.version>
   <java.awt.headless>true</java.awt.headless>
   <jvm.opts></jvm.opts>
   <jalopy.phase>disabled</jalopy.phase>
@@ -1768,7 +1752,7 @@
   <image.tests>true</image.tests>
   <interactive.tests>false</interactive.tests>
   <windows.leniency>true</windows.leniency>
-  <gf.version>3.2.0</gf.version>
+  <gf.version>3.2-SNAPSHOT</gf.version>
   <hibernate-version>3.6.0.Final</hibernate-version>
   <hibernate-generic-dao-version>1.1.0</hibernate-generic-dao-version>
   <hibernate-spatial-version>1.1.1</hibernate-spatial-version>
@@ -1777,6 +1761,7 @@
   <slf4j.version>1.6.4</slf4j.version>
   <joda-time.version>2.8.1</joda-time.version>
   <git.commit.useNative>false</git.commit.useNative>
+  <git.commit.runOnlyOnce>true</git.commit.runOnlyOnce>
  </properties>
 
  <profiles>
