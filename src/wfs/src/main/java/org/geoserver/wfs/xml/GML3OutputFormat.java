@@ -72,7 +72,7 @@ import org.geotools.feature.simple.SimpleFeatureTypeImpl;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
 import org.geotools.xml.Encoder;
-import org.junit.Before;
+//import org.junit.Before;
 import org.opengis.feature.Feature;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
