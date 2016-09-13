@@ -13,12 +13,14 @@ import org.geoserver.config.GeoServer;
 import org.geoserver.platform.Operation;
 import org.geoserver.platform.ServiceException;
 import org.geoserver.wfs.request.FeatureCollectionResponse;
+import org.geoserver.wfs.request.GetFeatureTypeImplExt;
 import org.geoserver.wfs.xml.GML3OutputFormat;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
+import com.siemens.ct.exi.CodingMode;
 import com.siemens.ct.exi.EXIFactory;
 import com.siemens.ct.exi.api.sax.EXIResult;
 import com.siemens.ct.exi.helpers.DefaultEXIFactory;
@@ -26,7 +28,7 @@ import com.siemens.ct.exi.helpers.DefaultEXIFactory;
 public class GML3EXIOutputFormat extends GML3OutputFormat {
 
 	public GML3EXIOutputFormat(GeoServer geoServer, WFSConfiguration configuration) {
-		super(new HashSet(Arrays.asList(new Object[]{"gml3-exi", "application/xhtml+xml;"})), 
+		super(new HashSet(Arrays.asList(new Object[]{"gml3-javaexi", "application/xhtml+xml;"})), 
 				geoServer, configuration);
 	}
 	
@@ -42,7 +44,33 @@ public class GML3EXIOutputFormat extends GML3OutputFormat {
 		InputStream is = new ByteArrayInputStream(gmlOutputStream.toByteArray());
 		InputSource inputSource = new InputSource(is);
 		try {
+			GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
+			String exiCodingModeString = implExt.getEXICodingMode().toUpperCase();
+			CodingMode codingMode = CodingMode.BIT_PACKED;
+			switch (exiCodingModeString) {
+				case "BIT_PACKED":{
+					codingMode = CodingMode.BIT_PACKED;
+					break;
+				}
+				case "BYTE_PACKED":{
+					codingMode = CodingMode.BYTE_PACKED;
+					break;
+				}
+				case "COMPRESSION":{
+					codingMode = CodingMode.COMPRESSION;
+					break;
+				}
+				case "PRE_COMPRESSION":{
+					codingMode = CodingMode.PRE_COMPRESSION;
+					break;
+				}
+				default:{
+					codingMode = CodingMode.BIT_PACKED;
+				}
+			}
+			
 			EXIFactory exiFactory = DefaultEXIFactory.newInstance();
+			exiFactory.setCodingMode(codingMode);
 			OutputStream osEXI = output;
 			EXIResult exiResult = new EXIResult(exiFactory);
 			exiResult.setOutputStream(osEXI);

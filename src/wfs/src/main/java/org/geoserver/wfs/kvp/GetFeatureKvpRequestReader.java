@@ -106,8 +106,8 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
          * ********************************************************************************************************************************************
          */
         request = new GetFeatureTypeImplExt();
+        GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt)request;
 		if(kvp.containsKey("simplifyMethod")){
-			GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt)request;
 			implExt.setSimplifyMethod((String)kvp.get("simplifyMethod"));
 			if(implExt.getSimplifyMethod() != GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE){
 				if(kvp.containsKey("simplifyDistanceTolerance")){
@@ -126,7 +126,10 @@ public class GetFeatureKvpRequestReader extends WFSKvpRequestReader {
 			}
 			System.out.println("simplify method detected = " + implExt.getSimplifyMethod() + " - " + implExt.getSimplifyDistanceTolerance());
 		}	
-      
+		if(kvp.containsKey("exiCodingMode")){
+			implExt.setEXICodingMode((String)(kvp.get("exiCodingMode")));
+			System.out.println("GML-EXI coding mode detected = " + implExt.getEXICodingMode());
+		}
         request = super.read(request, kvp, rawKvp);
         
         //get feature has some additional parsing requirements

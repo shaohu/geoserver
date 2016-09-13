@@ -21,6 +21,11 @@ public class GetFeatureTypeImplExt extends GetFeatureTypeImpl {
 	protected String simplifyMethod = SIMPLIFYMETHOD_NONE;
 	protected double simplifyDistanceTolerance = 0;
 	
+	/**
+	 * The coding mode been used for encoding gml file into exi file
+	 */
+	protected String exiCodingMode = "";
+	
 	public String getSimplifyMethod() {
         return this.simplifyMethod;
     }
@@ -47,5 +52,13 @@ public class GetFeatureTypeImplExt extends GetFeatureTypeImpl {
 	
 	public void setSimplifyDistanceTolerance(double value) {
 		this.simplifyDistanceTolerance = value; 
+	}
+	
+	public void setEXICodingMode(String codingMode) {
+		this.exiCodingMode = codingMode;
+	}
+	
+	public String getEXICodingMode() {
+		return this.exiCodingMode;
 	}
 }
