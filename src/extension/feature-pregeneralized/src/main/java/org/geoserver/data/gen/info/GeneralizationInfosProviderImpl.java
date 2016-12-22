@@ -5,6 +5,7 @@
  */
 package org.geoserver.data.gen.info;
 
+import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -31,6 +32,7 @@ public class GeneralizationInfosProviderImpl extends
 
         if (source instanceof String) {
             String path = (String) source;
+            System.out.println("Generalization class in Geoserver is called");
             
             GeoServerResourceLoader loader = GeoServerExtensions.bean(GeoServerResourceLoader.class);
             File f = loader.url(path);
