@@ -43,7 +43,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import net.opengis.wfs.FeatureCollectionType;
 import net.opengis.wfs.impl.GetFeatureTypeImpl;
-
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.ResourceInfo;
@@ -142,6 +141,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 //    	results.setSimplifyMethod(implExt.getSimpifyMethod());
 //    	results.setSimplifyDistanceTolerance(implExt.getSimpilifyDistanceTolerance());
     	System.out.println("The standard GML3 writer is called...");
+    	System.out.println(results.getClass().getName());
         List featureCollections = results.getFeature();
         
         int numDecimals = getNumDecimals(featureCollections, geoServer, catalog);

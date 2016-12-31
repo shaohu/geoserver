@@ -5,6 +5,7 @@
  */
 package org.geoserver.ows;
 
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,6 +69,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
+
+import com.google.common.base.Preconditions;
 
 
 /**
@@ -838,8 +842,12 @@ public class Dispatcher extends AbstractController {
                 String operationName = opDescriptor.getId();
                 result = ((DirectInvocationService)serviceBean).invokeDirect(operationName, parameters);
             }else{
+            	System.out.println("the function of getting realdata should begin here");
                 Method operation = opDescriptor.getMethod();
                 result = operation.invoke(serviceBean, parameters);
+                System.out.println("the function of DirectInvocationService is NOT called...");
+                System.out.println(result.getClass().getName());
+                
             }
          } catch (Exception e) {
             if (e.getCause() != null) {
@@ -847,15 +855,18 @@ public class Dispatcher extends AbstractController {
             }
             throw e;
         }
-
         return fireOperationExecutedCallback(req, opDescriptor, result);
     }
 
     Object fireOperationExecutedCallback(Request req, Operation op, Object result ) {
+    	Object resultStore = result;
+    	
+    	// note: the result object is changed here as well
         for ( DispatcherCallback cb : callbacks ) {
             Object r = cb.operationExecuted( req, op, result );
             result = r != null ? r : result;
         }
+        System.out.println(resultStore==result+"...");
         return result;
     }
     
