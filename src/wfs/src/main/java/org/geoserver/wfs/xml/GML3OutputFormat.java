@@ -141,7 +141,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             throws ServiceException, IOException, UnsupportedEncodingException {
 //    	results.setSimplifyMethod(implExt.getSimpifyMethod());
 //    	results.setSimplifyDistanceTolerance(implExt.getSimpilifyDistanceTolerance());
-    	
+    	System.out.println("The standard GML3 writer is called...");
         List featureCollections = results.getFeature();
         
         int numDecimals = getNumDecimals(featureCollections, geoServer, catalog);

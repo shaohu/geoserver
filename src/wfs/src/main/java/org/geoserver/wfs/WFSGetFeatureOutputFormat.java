@@ -192,7 +192,8 @@ public abstract class WFSGetFeatureOutputFormat extends WFSResponse {
         throws IOException, ServiceException {
         //for WFS 2.0 we changed the input object type to be the request object adapter, but there
         // is other code (like WMS GetFeatureInfo) that passes in the old objects, so do a check 
-        if (value instanceof FeatureCollectionResponse) {
+        System.out.println("the funciton in WFSGetFeature is called...");
+    	if (value instanceof FeatureCollectionResponse) {
             write((FeatureCollectionResponse) value, output, operation);
         }
         else {

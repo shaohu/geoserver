@@ -263,12 +263,14 @@ public class Dispatcher extends AbstractController {
                 // often how the request will be encoded
                 flagAsSOAP(operation);
             }
+            System.out.println("This line is called before the execution of request...");
 
             //execute it
             Object result = execute(request, operation);
 
             //write the response
             if (result != null) {
+            	System.out.println("function org.springframework.web.servlet.ModelAndViewhandleRequestInternal is called...");
                 response(result, request, operation);
             }
         } catch (Throwable t) {
@@ -988,6 +990,7 @@ public class Dispatcher extends AbstractController {
             }
 
             // actually write out the response
+            System.out.println("function org.geoserver.ows.Dispatcher.response is called...");
             response.write(result, output, opDescriptor);
 
             if (req.isSOAP()) {
