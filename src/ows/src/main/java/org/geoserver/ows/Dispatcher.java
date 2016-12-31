@@ -72,7 +72,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import com.google.common.base.Preconditions;
 
-
 /**
  * Dispatches an http request to an open web service (OWS).
  * <p>
