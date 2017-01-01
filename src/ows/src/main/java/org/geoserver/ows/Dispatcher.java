@@ -842,10 +842,14 @@ public class Dispatcher extends AbstractController {
                 result = ((DirectInvocationService)serviceBean).invokeDirect(operationName, parameters);
             }else{
             	System.out.println("the function of getting realdata should begin here");
+            	System.out.println(serviceBean.getClass().getName());
                 Method operation = opDescriptor.getMethod();
+                for (Object object : parameters) {
+					System.out.println(object);
+				}
                 result = operation.invoke(serviceBean, parameters);
                 System.out.println("the function of DirectInvocationService is NOT called...");
-                System.out.println(result.getClass().getName());
+            	System.out.println(result.getClass().getName());
                 
             }
          } catch (Exception e) {

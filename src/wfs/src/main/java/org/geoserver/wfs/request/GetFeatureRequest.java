@@ -73,6 +73,10 @@ public abstract class GetFeatureRequest extends RequestObject {
     
     public abstract void setSimplifyMethod(String simplifyMethod); 
     
+    public abstract Double getSimplifyDistanceTolerance();
+    
+    public abstract void setSimplifyDistanceTolerance(double simplifyDistanceTolerance); 
+    
     public abstract String getTraverseXlinkDepth();
     
     public abstract boolean isResultTypeResults();
@@ -195,6 +199,16 @@ public abstract class GetFeatureRequest extends RequestObject {
 			eSet(adaptee, "simplifyMethod", String.class);
 			
 		}
+
+		@Override
+		public Double getSimplifyDistanceTolerance() {
+			return eGet(adaptee, "simplifyDistanceTolerance", Double.class);
+		}
+
+		@Override
+		public void setSimplifyDistanceTolerance(double simplifyDistanceTolerance) {
+			eSet(adaptee, "simplifyDistanceTolerance", Double.class);
+		}
     }
 
     public static class WFS20 extends GetFeatureRequest {
@@ -290,6 +304,16 @@ public abstract class GetFeatureRequest extends RequestObject {
 		public void setSimplifyMethod(String simplifyMethod) {
 			eSet(adaptee, "simplifyMethod", String.class);
 			
+		}
+		
+		@Override
+		public Double getSimplifyDistanceTolerance() {
+			return eGet(adaptee, "simplifyDistanceTolerance", Double.class);
+		}
+
+		@Override
+		public void setSimplifyDistanceTolerance(double simplifyDistanceTolerance) {
+			eSet(adaptee, "simplifyDistanceTolerance", Double.class);
 		}
 
     }

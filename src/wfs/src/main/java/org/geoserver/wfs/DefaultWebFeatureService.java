@@ -14,6 +14,7 @@ import net.opengis.wfs.LockFeatureResponseType;
 import net.opengis.wfs.LockFeatureType;
 import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
+import sun.security.util.DisabledAlgorithmConstraints;
 
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
@@ -22,6 +23,7 @@ import org.geoserver.wfs.request.DescribeFeatureTypeRequest;
 import org.geoserver.wfs.request.FeatureCollectionResponse;
 import org.geoserver.wfs.request.GetCapabilitiesRequest;
 import org.geoserver.wfs.request.GetFeatureRequest;
+import org.geoserver.wfs.request.GetFeatureTypeImplExt;
 import org.geoserver.wfs.request.LockFeatureRequest;
 import org.geoserver.wfs.request.TransactionRequest;
 import org.geotools.xml.transform.TransformerBase;
@@ -61,6 +63,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
     public DefaultWebFeatureService(GeoServer gs) {
         this.geoServer = gs;
         this.catalog = gs.getCatalog();
+        System.out.println("DefaultWebFeatureService initialized...");
     }
 
     /**
@@ -116,8 +119,15 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
      */
     public FeatureCollectionResponse getFeature(GetFeatureType request)
         throws WFSException {
+    	System.out.println("FeatureCollectionResponse.getFeature function is called");
         GetFeature getFeature = new GetFeature(getServiceInfo(), catalog);
         getFeature.setFilterFactory(filterFactory);
+        System.out.println("Before the function new GetFeatureRequest.WFS11(request)");
+        System.out.println(request.getClass().getName());
+        if (request instanceof GetFeatureTypeImplExt){
+        	double distance = ((GetFeatureTypeImplExt) request).getSimplifyDistanceTolerance();
+        	System.out.println(distance);
+        }
         return getFeature.run(new GetFeatureRequest.WFS11(request));
     }
 

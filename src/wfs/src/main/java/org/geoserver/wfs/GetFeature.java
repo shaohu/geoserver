@@ -515,7 +515,7 @@ public class GetFeature {
                         queryMaxFeatures, source, request, allPropNames.get(0), viewParam,
                             joins, primaryTypeName, primaryAlias);
 
-//              System.out.println("Query is " + query + "\n To gt2: " + gtQuery);
+              System.out.println("Query is " + query + "\n To gt2: " + gtQuery);
 
               FeatureCollection<? extends FeatureType, ? extends Feature> features = getFeatures(request, source, gtQuery);
                 
@@ -1079,6 +1079,9 @@ public class GetFeature {
             dataQuery.getJoins().addAll(joins);
         }
         
+        System.out.println("This is the place to build th correct query");
+        System.out.println(request.getSimplifyMethod());
+        System.out.println(request.getSimplifyDistanceTolerance());
         
         //finally, set the hints
         dataQuery.setHints(hints);
