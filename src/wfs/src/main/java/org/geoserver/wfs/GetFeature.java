@@ -37,6 +37,7 @@ import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.KvpMap;
 import org.geoserver.wfs.request.FeatureCollectionResponse;
 import org.geoserver.wfs.request.GetFeatureRequest;
+import org.geoserver.wfs.request.GetFeatureTypeImplExt;
 import org.geoserver.wfs.request.Lock;
 import org.geoserver.wfs.request.LockFeatureRequest;
 import org.geoserver.wfs.request.LockFeatureResponse;
@@ -240,7 +241,6 @@ public class GetFeature {
             throw new WFSException(request, "No query specified");
         }
         
-
         //stored queries, preprocess compile any stored queries into actual query objects
         processStoredQueries(request);
         queries = request.getQueries();
@@ -515,7 +515,7 @@ public class GetFeature {
                         queryMaxFeatures, source, request, allPropNames.get(0), viewParam,
                             joins, primaryTypeName, primaryAlias);
 
-              System.out.println("Query is " + query + "\n To gt2: " + gtQuery);
+//              System.out.println("Query is " + query + "\n To gt2: " + gtQuery);
 
               FeatureCollection<? extends FeatureType, ? extends Feature> features = getFeatures(request, source, gtQuery);
                 
@@ -1079,9 +1079,11 @@ public class GetFeature {
             dataQuery.getJoins().addAll(joins);
         }
         
-        System.out.println("This is the place to build th correct query");
-        System.out.println(request.getSimplifyMethod());
-        System.out.println(request.getSimplifyDistanceTolerance());
+        System.out.println("Here in org.geoserver.wfs.GetFeature.toDataQuery we wrap the distance torlance parameter into query hints");
+        if(request.getSimplifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPLIFYMETHOD_DP)){
+        	double distanceTolerance = request.getSimplifyDistanceTolerance();
+        	hints.put(Hints.GEOMETRY_DISTANCE, distanceTolerance);
+        }
         
         //finally, set the hints
         dataQuery.setHints(hints);

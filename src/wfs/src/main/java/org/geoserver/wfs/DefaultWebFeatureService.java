@@ -123,11 +123,11 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
         GetFeature getFeature = new GetFeature(getServiceInfo(), catalog);
         getFeature.setFilterFactory(filterFactory);
         System.out.println("Before the function new GetFeatureRequest.WFS11(request)");
-        System.out.println(request.getClass().getName());
-        if (request instanceof GetFeatureTypeImplExt){
-        	double distance = ((GetFeatureTypeImplExt) request).getSimplifyDistanceTolerance();
-        	System.out.println(distance);
-        }
+        System.out.println("sdiaghiasgas"+request.getClass().getName());
+//        if (request instanceof GetFeatureTypeImplExt){
+//        	double distance = ((GetFeatureTypeImplExt) request).getSimplifyDistanceTolerance();
+//        	System.out.println(distance);
+//        }
         return getFeature.run(new GetFeatureRequest.WFS11(request));
     }
 

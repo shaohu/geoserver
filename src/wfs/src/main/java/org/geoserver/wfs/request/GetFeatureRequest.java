@@ -191,23 +191,34 @@ public abstract class GetFeatureRequest extends RequestObject {
         
 		@Override
 		public String getSimplifyMethod() {
-			return eGet(adaptee, "simplifyMethod", String.class);
+			if(adaptee instanceof GetFeatureTypeImplExt){
+				return ((GetFeatureTypeImplExt)adaptee).getSimplifyMethod();
+			}else{
+				return GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE;
+			}
 		}
 
 		@Override
 		public void setSimplifyMethod(String simplifyMethod) {
-			eSet(adaptee, "simplifyMethod", String.class);
-			
+			if(adaptee instanceof GetFeatureTypeImplExt){
+				((GetFeatureTypeImplExt)adaptee).setSimplifyMethod(simplifyMethod);
+			}
 		}
 
 		@Override
 		public Double getSimplifyDistanceTolerance() {
-			return eGet(adaptee, "simplifyDistanceTolerance", Double.class);
+			if(adaptee instanceof GetFeatureTypeImplExt){
+				return ((GetFeatureTypeImplExt)adaptee).getSimplifyDistanceTolerance();
+			}else{
+				return -1.0;
+			}
 		}
 
 		@Override
 		public void setSimplifyDistanceTolerance(double simplifyDistanceTolerance) {
-			eSet(adaptee, "simplifyDistanceTolerance", Double.class);
+			if(adaptee instanceof GetFeatureTypeImplExt){
+				((GetFeatureTypeImplExt)adaptee).setSimplifyDistanceTolerance(simplifyDistanceTolerance);
+			}
 		}
     }
 
@@ -295,25 +306,36 @@ public abstract class GetFeatureRequest extends RequestObject {
             return eGet(adaptee, "resolveTimeOut", BigInteger.class);
         }
 
-		@Override
+        @Override
 		public String getSimplifyMethod() {
-			return eGet(adaptee, "simplifyMethod", String.class);
+			if(adaptee instanceof GetFeatureTypeImplExt){
+				return ((GetFeatureTypeImplExt)adaptee).getSimplifyMethod();
+			}else{
+				return GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE;
+			}
 		}
 
 		@Override
 		public void setSimplifyMethod(String simplifyMethod) {
-			eSet(adaptee, "simplifyMethod", String.class);
-			
+			if(adaptee instanceof GetFeatureTypeImplExt){
+				((GetFeatureTypeImplExt)adaptee).setSimplifyMethod(simplifyMethod);
+			}
 		}
-		
+
 		@Override
 		public Double getSimplifyDistanceTolerance() {
-			return eGet(adaptee, "simplifyDistanceTolerance", Double.class);
+			if(adaptee instanceof GetFeatureTypeImplExt){
+				return ((GetFeatureTypeImplExt)adaptee).getSimplifyDistanceTolerance();
+			}else{
+				return -1.0;
+			}
 		}
 
 		@Override
 		public void setSimplifyDistanceTolerance(double simplifyDistanceTolerance) {
-			eSet(adaptee, "simplifyDistanceTolerance", Double.class);
+			if(adaptee instanceof GetFeatureTypeImplExt){
+				((GetFeatureTypeImplExt)adaptee).setSimplifyDistanceTolerance(simplifyDistanceTolerance);
+			}
 		}
 
     }
