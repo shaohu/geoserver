@@ -297,79 +297,79 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             }
         }
 
-//      before encoding, execute the simplify method here
-        GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
-        if(implExt.getSimplifyMethod()!=GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE){
-			System.out.println("Conduct geometry simplify in GML, "+implExt.getSimplifyMethod()+", "+implExt.getSimplifyDistanceTolerance()+"");
-			long currentTime_beginSimplify = System.currentTimeMillis();
-	        int totalSize = 0;
-	        int totalSizeSimple = 0;
-			ArrayList<SimpleFeatureCollection>featureCollectionsBuffer = new ArrayList<>();
-    		if(implExt.getSimplifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPLIFYMETHOD_DP)){
-            	double distanceTolerance = implExt.getSimplifyDistanceTolerance();
-            	for(int i=0; i<featureCollections.size(); i++){
-              	   if(featureCollections.get(i) instanceof SimpleFeatureCollection){  // could be ReprojectFeatureResults or ForceCoordinateSystemFeatureResults 
-              		 SimpleFeatureCollection reprojectFeatureResults = (SimpleFeatureCollection) featureCollections.get(i);
-              		   SimplifiedSimpleFeatureCollection collectionNew = new SimplifiedSimpleFeatureCollection();
-              		   featureCollectionsBuffer.add(collectionNew);
-              		   collectionNew.setBounds(reprojectFeatureResults.getBounds());
-              		   collectionNew.setID(reprojectFeatureResults.getID());
-              		   collectionNew.setSchema(reprojectFeatureResults.getSchema());
-              		   SimpleFeatureIterator features = reprojectFeatureResults.features();
-              		   while(features.hasNext()){
-              			   SimpleFeature next = (SimpleFeature) features.next();
-              			   Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
-              			   totalSize += defaultGeometry.getNumPoints();
-            			   Geometry simplify = DouglasPeuckerSimplifier.simplify(defaultGeometry, distanceTolerance);
-            			   next.setDefaultGeometry(simplify);
-            			   collectionNew.addSimpleFeature(next);
-              		   }
-              	   }
-                 }
-            }
-            else if (implExt.getSimplifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPLIFYMETHOD_TP)) {
-            	double distanceTolerance = implExt.getSimplifyDistanceTolerance();
-            	for(int i=0; i<featureCollections.size(); i++){
-              	   if(featureCollections.get(i) instanceof ReprojectFeatureResults){
-              		 ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections.get(i);
-            		   SimplifiedSimpleFeatureCollection collectionNew = new SimplifiedSimpleFeatureCollection();
-            		   featureCollectionsBuffer.add(collectionNew);
-            		   collectionNew.setBounds(reprojectFeatureResults.getBounds());
-            		   collectionNew.setID(reprojectFeatureResults.getID());
-            		   collectionNew.setSchema(reprojectFeatureResults.getSchema());
-            		   SimpleFeatureIterator features = reprojectFeatureResults.features();
-              		   while(features.hasNext()){
-              			   SimpleFeature next = features.next();
-              			   Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
-              			   totalSize += defaultGeometry.getNumPoints();
-              			   Geometry simplify = TopologyPreservingSimplifier.simplify(defaultGeometry, distanceTolerance);
-              			   next.setDefaultGeometry(simplify);
-              			   collectionNew.addSimpleFeature(next);
-              		   }
-              	   }
-                 }
-    		}
-    		results.getFeature().clear();
-    		results.getFeature().addAll(featureCollectionsBuffer);
-    		
-    		
-    		int totalFeatureCount = 0;
-            featureCollections = results.getFeature(); 
-            for (int i = 0; i < featureCollections.size(); i++) {
-    			if (featureCollections.get(i) instanceof SimplifiedSimpleFeatureCollection) {
-    				SimplifiedSimpleFeatureCollection reprojectFeatureResults = (SimplifiedSimpleFeatureCollection) featureCollections.get(i);
-    				SimpleFeatureIterator features = reprojectFeatureResults.features();
-    				while (features.hasNext()) {
-    					SimpleFeature next = features.next();
-    					Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
-    					totalSizeSimple += defaultGeometry.getNumPoints();
-             			totalFeatureCount += 1;
-    				}
-    			}
-    		}
-            System.out.println(String.format("total feature count: %d; Result point count: origin-%d, simplified-%d", totalFeatureCount, totalSize, totalSizeSimple));
-    		TimeUsedForDataGeneralizingExport.timeUsedForDataGeneralizing = (int)(System.currentTimeMillis()-currentTime_beginSimplify);
-    	}
+////      before encoding, execute the simplify method here
+//        GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
+//        if(implExt.getSimplifyMethod()!=GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE){
+//			System.out.println("Conduct geometry simplify in GML, "+implExt.getSimplifyMethod()+", "+implExt.getSimplifyDistanceTolerance()+"");
+//			long currentTime_beginSimplify = System.currentTimeMillis();
+//	        int totalSize = 0;
+//	        int totalSizeSimple = 0;
+//			ArrayList<SimpleFeatureCollection>featureCollectionsBuffer = new ArrayList<>();
+//    		if(implExt.getSimplifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPLIFYMETHOD_DP)){
+//            	double distanceTolerance = implExt.getSimplifyDistanceTolerance();
+//            	for(int i=0; i<featureCollections.size(); i++){
+//              	   if(featureCollections.get(i) instanceof SimpleFeatureCollection){  // could be ReprojectFeatureResults or ForceCoordinateSystemFeatureResults 
+//              		 SimpleFeatureCollection reprojectFeatureResults = (SimpleFeatureCollection) featureCollections.get(i);
+//              		   SimplifiedSimpleFeatureCollection collectionNew = new SimplifiedSimpleFeatureCollection();
+//              		   featureCollectionsBuffer.add(collectionNew);
+//              		   collectionNew.setBounds(reprojectFeatureResults.getBounds());
+//              		   collectionNew.setID(reprojectFeatureResults.getID());
+//              		   collectionNew.setSchema(reprojectFeatureResults.getSchema());
+//              		   SimpleFeatureIterator features = reprojectFeatureResults.features();
+//              		   while(features.hasNext()){
+//              			   SimpleFeature next = (SimpleFeature) features.next();
+//              			   Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
+//              			   totalSize += defaultGeometry.getNumPoints();
+//            			   Geometry simplify = DouglasPeuckerSimplifier.simplify(defaultGeometry, distanceTolerance);
+//            			   next.setDefaultGeometry(simplify);
+//            			   collectionNew.addSimpleFeature(next);
+//              		   }
+//              	   }
+//                 }
+//            }
+//            else if (implExt.getSimplifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPLIFYMETHOD_TP)) {
+//            	double distanceTolerance = implExt.getSimplifyDistanceTolerance();
+//            	for(int i=0; i<featureCollections.size(); i++){
+//              	   if(featureCollections.get(i) instanceof ReprojectFeatureResults){
+//              		 ReprojectFeatureResults reprojectFeatureResults = (ReprojectFeatureResults) featureCollections.get(i);
+//            		   SimplifiedSimpleFeatureCollection collectionNew = new SimplifiedSimpleFeatureCollection();
+//            		   featureCollectionsBuffer.add(collectionNew);
+//            		   collectionNew.setBounds(reprojectFeatureResults.getBounds());
+//            		   collectionNew.setID(reprojectFeatureResults.getID());
+//            		   collectionNew.setSchema(reprojectFeatureResults.getSchema());
+//            		   SimpleFeatureIterator features = reprojectFeatureResults.features();
+//              		   while(features.hasNext()){
+//              			   SimpleFeature next = features.next();
+//              			   Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
+//              			   totalSize += defaultGeometry.getNumPoints();
+//              			   Geometry simplify = TopologyPreservingSimplifier.simplify(defaultGeometry, distanceTolerance);
+//              			   next.setDefaultGeometry(simplify);
+//              			   collectionNew.addSimpleFeature(next);
+//              		   }
+//              	   }
+//                 }
+//    		}
+//    		results.getFeature().clear();
+//    		results.getFeature().addAll(featureCollectionsBuffer);
+//    		
+//    		
+//    		int totalFeatureCount = 0;
+//            featureCollections = results.getFeature(); 
+//            for (int i = 0; i < featureCollections.size(); i++) {
+//    			if (featureCollections.get(i) instanceof SimplifiedSimpleFeatureCollection) {
+//    				SimplifiedSimpleFeatureCollection reprojectFeatureResults = (SimplifiedSimpleFeatureCollection) featureCollections.get(i);
+//    				SimpleFeatureIterator features = reprojectFeatureResults.features();
+//    				while (features.hasNext()) {
+//    					SimpleFeature next = features.next();
+//    					Geometry defaultGeometry = (Geometry) next.getDefaultGeometry();
+//    					totalSizeSimple += defaultGeometry.getNumPoints();
+//             			totalFeatureCount += 1;
+//    				}
+//    			}
+//    		}
+//            System.out.println(String.format("total feature count: %d; Result point count: origin-%d, simplified-%d", totalFeatureCount, totalSize, totalSizeSimple));
+//    		TimeUsedForDataGeneralizingExport.timeUsedForDataGeneralizing = (int)(System.currentTimeMillis()-currentTime_beginSimplify);
+//    	}
         
         setAdditionalSchemaLocations(encoder, request, wfs);
         if (this.isComplexFeature(results)) {
@@ -397,6 +397,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     
     protected void encode(FeatureCollectionResponse results, OutputStream output, Encoder encoder)
         throws IOException {
+    	System.out.println(results.unadapt(FeatureCollectionType.class));
         encoder.encode(results.unadapt(FeatureCollectionType.class),
                 org.geoserver.wfs.xml.v1_1_0.WFS.FEATURECOLLECTION, output);
     }
