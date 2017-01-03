@@ -7,6 +7,7 @@ package org.geoserver.wfs;
 
 import static org.geoserver.ows.util.ResponseUtils.buildURL;
 
+import java.awt.print.Printable;
 import java.io.Console;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -49,6 +50,7 @@ import org.geoserver.wfs.response.HitsOutputFormat;
 import org.geotools.data.DataUtilities;
 import org.geotools.data.FeatureSource;
 import org.geotools.data.Join;
+import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
 import org.geotools.data.gen.PreGeneralizedSimpleFeature;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -511,6 +513,7 @@ public class GetFeature {
                 
                 FeatureSource<? extends FeatureType, ? extends Feature> source = 
                     primaryMeta.getFeatureSource(null, hints);
+                System.out.println(source.getSchema().getCoordinateReferenceSystem());
                 
                 // handle local maximum
                 int queryMaxFeatures = maxFeatures - count;
@@ -526,8 +529,15 @@ public class GetFeature {
 //              System.out.println("Query is " + query + "\n To gt2: " + gtQuery);
 
               FeatureCollection<? extends FeatureType, ? extends Feature> features = getFeatures(request, source, gtQuery);
+              FeatureCollection<? extends FeatureType, ? extends Feature> oldFeature = features;
+              
 //              features = generalize_feature_realtime(features, request); 
-                
+//
+              System.out.println(oldFeature);
+              System.out.println(oldFeature.getSchema());
+              System.out.println(features);
+              System.out.println(features.getSchema());
+              
                 // For complex features, we need the targetCrs and version in scenario where we have
                 // a top level feature that does not contain a geometry(therefore no crs) and has a
                 // nested feature that contains geometry as its property.Furthermore it is possible
@@ -723,6 +733,7 @@ public class GetFeature {
     	collectionNew.setBounds(featureCollection.getBounds());
     	collectionNew.setID(featureCollection.getID());
 		collectionNew.setSchema((SimpleFeatureType) featureCollection.getSchema());
+		System.out.println(featureCollection.getSchema());
 		FeatureIterator<? extends Feature> iterator = featureCollection.features();
     	while(iterator.hasNext()){
     		Feature nextFeature = iterator.next();
@@ -755,6 +766,7 @@ public class GetFeature {
     			return featureCollection;
     		}
     		Geometry defaultGeometry = (Geometry) ((SimpleFeatureImpl)nextFeature).getDefaultGeometry();
+    		
     		totalSize += defaultGeometry.getNumPoints();
     		Geometry simplify = null;
     		if(isDP){
@@ -1077,6 +1089,7 @@ public class GetFeature {
             Object request, FeatureSource<? extends FeatureType, ? extends Feature> source,
             org.geotools.data.Query gtQuery)
             throws IOException {
+    	System.out.println(source);
         return source.getFeatures(gtQuery);
     }
 

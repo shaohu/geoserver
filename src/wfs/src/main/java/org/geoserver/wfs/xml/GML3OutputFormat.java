@@ -143,7 +143,8 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
     	System.out.println("The standard GML3 writer is called...");
     	System.out.println(results.getClass().getName());
         List featureCollections = results.getFeature();
-        
+        System.out.println(featureCollections);
+        System.out.println(featureCollections.size());
         int numDecimals = getNumDecimals(featureCollections, geoServer, catalog);
         
         GetFeatureRequest request = GetFeatureRequest.adapt(getFeature.getParameters()[0]);
