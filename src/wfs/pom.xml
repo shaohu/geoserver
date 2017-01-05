@@ -126,20 +126,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt-data</artifactId>
-			<version>${gt.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
 			<artifactId>gt-feature-pregeneralized</artifactId>
 			<version>${gt.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-feature-pregeneralized</artifactId>
-			<version>${gt.version}</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
