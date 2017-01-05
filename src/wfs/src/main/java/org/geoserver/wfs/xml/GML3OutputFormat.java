@@ -61,12 +61,15 @@ import org.geoserver.wfs.request.GetFeatureTypeImplExt;
 import org.geoserver.wfs.request.Query;
 import org.geoserver.wfs.xml.v1_1_0.WFS;
 import org.geoserver.wfs.xml.v1_1_0.WFSConfiguration;
+import org.geotools.data.crs.ForceCoordinateSystemFeatureResults;
 import org.geotools.data.crs.ReprojectFeatureResults;
+import org.geotools.data.gen.PreGeneralizedSimpleFeature;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.NameImpl;
+import org.geotools.feature.simple.SimpleFeatureImpl;
 import org.geotools.feature.simple.SimpleFeatureTypeImpl;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.Configuration;
@@ -298,8 +301,11 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             }
         }
 
-////      before encoding, execute the simplify method here
-//        GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
+        
+//      before encoding, execute the simplify method here
+        GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
+        generalize_feature_realtime(results, implExt);
+        
 //        if(implExt.getSimplifyMethod()!=GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE){
 //			System.out.println("Conduct geometry simplify in GML, "+implExt.getSimplifyMethod()+", "+implExt.getSimplifyDistanceTolerance()+"");
 //			long currentTime_beginSimplify = System.currentTimeMillis();
@@ -316,6 +322,8 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 //              		   collectionNew.setBounds(reprojectFeatureResults.getBounds());
 //              		   collectionNew.setID(reprojectFeatureResults.getID());
 //              		   collectionNew.setSchema(reprojectFeatureResults.getSchema());
+//            		   System.out.println(collectionNew.getSchema());
+//            		   System.out.println("888888888888888888888888888888");
 //              		   SimpleFeatureIterator features = reprojectFeatureResults.features();
 //              		   while(features.hasNext()){
 //              			   SimpleFeature next = (SimpleFeature) features.next();
@@ -338,6 +346,8 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 //            		   collectionNew.setBounds(reprojectFeatureResults.getBounds());
 //            		   collectionNew.setID(reprojectFeatureResults.getID());
 //            		   collectionNew.setSchema(reprojectFeatureResults.getSchema());
+//            		   System.out.println(collectionNew.getSchema());
+//            		   System.out.println("888888888888888888888888888888");
 //            		   SimpleFeatureIterator features = reprojectFeatureResults.features();
 //              		   while(features.hasNext()){
 //              			   SimpleFeature next = features.next();
@@ -379,6 +389,168 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
             encode(results, output, encoder);
         }
     }
+    
+    /**
+	 * No matter the featureCollection comes from original or pregeneralized data set, 
+	 * they should be processed and wrapped into ForceCoordinateSystemFeatureResults here in order to be correctlly processed later
+	 * @param featureCollection
+	 * @param request
+	 * @return
+	 */
+	protected void generalize_feature_realtime(FeatureCollectionResponse result, GetFeatureTypeImplExt request) {
+		List<FeatureCollection> features = result.getFeatures();
+		System.out.println(features.get(0));
+		if (request.getSimplifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPLIFYMETHOD_NONE)
+				&& features.size()>0 && (features.get(0) instanceof ForceCoordinateSystemFeatureResults)) {
+			return;
+		}
+		boolean isDP = true;
+		if (request.getSimplifyMethod().equalsIgnoreCase(GetFeatureTypeImplExt.SIMPLIFYMETHOD_TP)) {
+			isDP = false;
+		}
+		double distanceTolerance = request.getSimplifyDistanceTolerance();
+		System.out.println(String.format(
+				"Conduct the realtime geometry generalization in org.geoserver.wfs.GetFeature.generalize_feature_realtime. simplify method: %s; distance tolerance: %f",
+				request.getSimplifyMethod(), distanceTolerance));
+		
+		
+		ArrayList<SimpleFeatureCollection>featureCollectionsBuffer = new ArrayList<>();
+		int totalSize = 0;
+		for(int i=0; i<features.size(); i++){
+			SimplifiedSimpleFeatureCollection collectionNew = new SimplifiedSimpleFeatureCollection();
+			featureCollectionsBuffer.add(collectionNew);
+			FeatureCollection featureCollection = features.get(i);
+//			System.out.println(featureCollection.getSchema());
+//			System.out.println(((ForceCoordinateSystemFeatureResults)featureCollection).getOrigin().getSchema());
+//			System.out.println(((ForceCoordinateSystemFeatureResults)featureCollection).getOrigin());
+			collectionNew.setBounds(featureCollection.getBounds());
+			collectionNew.setID(featureCollection.getID());
+			collectionNew.setSchema((SimpleFeatureType) featureCollection.getSchema());
+			System.out.println("here is the schema of newly generalized data collection");
+			System.out.println(featureCollection.getSchema());
+			FeatureIterator<? extends Feature> iterator = featureCollection.features();
+			while (iterator.hasNext()) {
+				Feature nextFeature = iterator.next();
+				if (nextFeature instanceof PreGeneralizedSimpleFeature) {
+					// The pregeneralized feature was set unchangeable, so we can
+					// not directly modify the geometry in each feature obj.
+					// In order to do this, we need to build another new
+					// SimpleFeatureImpl and copy all info inside of the
+					// PreGeneralizedSimpleFeature to it
+					// Here is the code of initializing a
+					// PreGeneralizedSimpleFeature:
+					// https://github.com/boundlessgeo/geotools-2.7.x/blob/master/modules/plugin/feature-pregeneralized/src/main/java/org/geotools/data/gen/PreGeneralizedSimpleFeature.java#L70
+
+					/*
+					 * public PreGeneralizedSimpleFeature(SimpleFeatureType
+					 * featureTyp, int indexMapping[], SimpleFeature feature, String
+					 * geomPropertyName, String backendGeomPropertyName) {
+					 * 
+					 * this.feature = feature; this.geomPropertyName =
+					 * geomPropertyName; this.backendGeomPropertyName =
+					 * backendGeomPropertyName; this.featureTyp = featureTyp;
+					 * this.indexMapping = indexMapping;
+					 * this.nameBackendGeomProperty = new
+					 * NameImpl(backendGeomPropertyName);
+					 * 
+					 * }
+					 */
+					PreGeneralizedSimpleFeature generalizedSimpleFeature = (PreGeneralizedSimpleFeature) nextFeature;
+					SimpleFeatureImpl newFeature = new SimpleFeatureImpl(generalizedSimpleFeature.getAttributes(),
+							generalizedSimpleFeature.getType(), generalizedSimpleFeature.getIdentifier());
+					newFeature.setDefaultGeometry(generalizedSimpleFeature.getDefaultGeometry());
+					nextFeature = newFeature;
+				}
+				if (!(nextFeature instanceof SimpleFeatureImpl)) {
+					System.err.println(
+							"find unsupported feature type in org.geoserver.wfs.GetFeature.generalize_feature_realtime:"
+									+ nextFeature.getClass().getName());
+					return;
+				}
+				Geometry defaultGeometry = (Geometry) ((SimpleFeatureImpl) nextFeature).getDefaultGeometry();
+
+				totalSize += defaultGeometry.getNumPoints();
+				Geometry simplify = null;
+				if (isDP) {
+					simplify = DouglasPeuckerSimplifier.simplify(defaultGeometry, distanceTolerance);
+				} else {
+					simplify = TopologyPreservingSimplifier.simplify(defaultGeometry, distanceTolerance);
+				}
+				((SimpleFeatureImpl) nextFeature).setDefaultGeometry(simplify);
+				collectionNew.addSimpleFeature((SimpleFeatureImpl) nextFeature);
+			}
+
+          }
+		result.getFeature().clear();
+		result.getFeature().addAll(featureCollectionsBuffer);
+		
+		
+		
+		
+//		SimplifiedSimpleFeatureCollection collectionNew = new SimplifiedSimpleFeatureCollection();
+//		int totalSize = 0;
+//		System.out.println(featureCollection.getSchema());
+//		System.out.println(((ForceCoordinateSystemFeatureResults)featureCollection).getOrigin().getSchema());
+//		System.out.println(((ForceCoordinateSystemFeatureResults)featureCollection).getOrigin());
+//		collectionNew.setBounds(featureCollection.getBounds());
+//		collectionNew.setID(featureCollection.getID());
+//		collectionNew.setSchema((SimpleFeatureType) featureCollection.getSchema());
+//		System.out.println("here is the schema of newly generalized data collection");
+//		System.out.println(featureCollection.getSchema());
+//		FeatureIterator<? extends Feature> iterator = featureCollection.features();
+//		while (iterator.hasNext()) {
+//			Feature nextFeature = iterator.next();
+//			if (nextFeature instanceof PreGeneralizedSimpleFeature) {
+//				// The pregeneralized feature was set unchangeable, so we can
+//				// not directly modify the geometry in each feature obj.
+//				// In order to do this, we need to build another new
+//				// SimpleFeatureImpl and copy all info inside of the
+//				// PreGeneralizedSimpleFeature to it
+//				// Here is the code of initializing a
+//				// PreGeneralizedSimpleFeature:
+//				// https://github.com/boundlessgeo/geotools-2.7.x/blob/master/modules/plugin/feature-pregeneralized/src/main/java/org/geotools/data/gen/PreGeneralizedSimpleFeature.java#L70
+//
+//				/*
+//				 * public PreGeneralizedSimpleFeature(SimpleFeatureType
+//				 * featureTyp, int indexMapping[], SimpleFeature feature, String
+//				 * geomPropertyName, String backendGeomPropertyName) {
+//				 * 
+//				 * this.feature = feature; this.geomPropertyName =
+//				 * geomPropertyName; this.backendGeomPropertyName =
+//				 * backendGeomPropertyName; this.featureTyp = featureTyp;
+//				 * this.indexMapping = indexMapping;
+//				 * this.nameBackendGeomProperty = new
+//				 * NameImpl(backendGeomPropertyName);
+//				 * 
+//				 * }
+//				 */
+//				PreGeneralizedSimpleFeature generalizedSimpleFeature = (PreGeneralizedSimpleFeature) nextFeature;
+//				SimpleFeatureImpl newFeature = new SimpleFeatureImpl(generalizedSimpleFeature.getAttributes(),
+//						generalizedSimpleFeature.getType(), generalizedSimpleFeature.getIdentifier());
+//				newFeature.setDefaultGeometry(generalizedSimpleFeature.getDefaultGeometry());
+//				nextFeature = newFeature;
+//			}
+//			if (!(nextFeature instanceof SimpleFeatureImpl)) {
+//				System.err.println(
+//						"find unsupported feature type in org.geoserver.wfs.GetFeature.generalize_feature_realtime:"
+//								+ nextFeature.getClass().getName());
+//				return featureCollection;
+//			}
+//			Geometry defaultGeometry = (Geometry) ((SimpleFeatureImpl) nextFeature).getDefaultGeometry();
+//
+//			totalSize += defaultGeometry.getNumPoints();
+//			Geometry simplify = null;
+//			if (isDP) {
+//				simplify = DouglasPeuckerSimplifier.simplify(defaultGeometry, distanceTolerance);
+//			} else {
+//				simplify = TopologyPreservingSimplifier.simplify(defaultGeometry, distanceTolerance);
+//			}
+//			((SimpleFeatureImpl) nextFeature).setDefaultGeometry(simplify);
+//			collectionNew.addSimpleFeature((SimpleFeatureImpl) nextFeature);
+//		}
+//
+//		return collectionNew;
+	}
     
     protected void setNumDecimals(int numDecimals) {
         GMLConfiguration gml = configuration.getDependency(GMLConfiguration.class);
