@@ -54,6 +54,7 @@ import org.geoserver.wfs.WFSException;
 import org.geoserver.wfs.WFSGetFeatureOutputFormat;
 import org.geoserver.wfs.WFSInfo;
 import org.geoserver.wfs.format.ext.TimeUsedForDataGeneralizingExport;
+import org.geoserver.wfs.format.ext.TimeUsedForDataPreparingExport;
 import org.geoserver.wfs.format.simplify.SimplifiedSimpleFeatureCollection;
 import org.geoserver.wfs.request.FeatureCollectionResponse;
 import org.geoserver.wfs.request.GetFeatureRequest;
@@ -416,6 +417,7 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 		
 		ArrayList<SimpleFeatureCollection>featureCollectionsBuffer = new ArrayList<>();
 		int totalSize = 0;
+		int totalSizeSimplified = 0;
 		for(int i=0; i<features.size(); i++){
 			SimplifiedSimpleFeatureCollection collectionNew = new SimplifiedSimpleFeatureCollection();
 			featureCollectionsBuffer.add(collectionNew);
@@ -471,19 +473,26 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 
 				totalSize += defaultGeometry.getNumPoints();
 				Geometry simplify = null;
-				if (isDP) {
-					simplify = DouglasPeuckerSimplifier.simplify(defaultGeometry, distanceTolerance);
-				} else {
-					simplify = TopologyPreservingSimplifier.simplify(defaultGeometry, distanceTolerance);
+				if(distanceTolerance==0.0){
+					simplify = defaultGeometry;
+				}else{
+					if (isDP) {
+						simplify = DouglasPeuckerSimplifier.simplify(defaultGeometry, distanceTolerance);
+					} else {
+						simplify = TopologyPreservingSimplifier.simplify(defaultGeometry, distanceTolerance);
+					}
 				}
+				
 				((SimpleFeatureImpl) nextFeature).setDefaultGeometry(simplify);
+				totalSizeSimplified += simplify.getNumPoints();
 				collectionNew.addSimpleFeature((SimpleFeatureImpl) nextFeature);
 			}
 
           }
 		result.getFeature().clear();
 		result.getFeature().addAll(featureCollectionsBuffer);
-		
+		TimeUsedForDataPreparingExport.totalPointsCount = totalSize;
+		TimeUsedForDataPreparingExport.totalPointsSimplifiedCount = totalSizeSimplified;
 		
 		
 		

@@ -21,6 +21,12 @@ import org.tukaani.xz.XZOutputStream;
 
 public class TimeUsedForDataPreparingExport extends GML3OutputFormat{
 	static public int timeUsedForDataPreparing = 0;
+	
+	static public int totalPointsCount = 0;
+	static public int totalPointsSimplifiedCount = 0;
+	
+	
+	
 	public TimeUsedForDataPreparingExport(GeoServer geoServer, WFSConfiguration configuration){
 		super(new HashSet(Arrays.asList(new Object[]{"time-for-data-preparing-int-text", "application/text;"})), 
 				geoServer, configuration);
@@ -29,8 +35,14 @@ public class TimeUsedForDataPreparingExport extends GML3OutputFormat{
 	@Override
 	protected void write(FeatureCollectionResponse featureCollection, OutputStream output, Operation getFeature)
 			throws IOException, ServiceException {
-		output.write(String.valueOf(timeUsedForDataPreparing).getBytes());
+		
+		String line = String.format("timeUsedForDataPreparing:%s;totalPointsCount:%s;totalPointsSimplifiedCount:%s", 
+				timeUsedForDataPreparing, totalPointsCount, totalPointsSimplifiedCount);
+		
+		output.write(line.getBytes());
 		timeUsedForDataPreparing = 0;
+		totalPointsCount = 0;
+		totalPointsSimplifiedCount = 0;
 	}
 	
 	@Override
