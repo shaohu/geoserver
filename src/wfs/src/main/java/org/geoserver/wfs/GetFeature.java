@@ -572,8 +572,12 @@ public class GetFeature {
 
 					int size = 0;
 					if (calculateSize) {
+						// comment: although this function may create new connections, 
+						// according to the debugging results, 
+						// it close them after the using. 
+						// So, no bug here.
 						size = features.size();
-//						System.out.println("this comment need to be changes back after the testing. $#$#DF$GF654yH^5");
+						
 					}
 
 					// update the count
