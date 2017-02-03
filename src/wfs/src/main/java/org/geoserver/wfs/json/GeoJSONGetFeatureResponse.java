@@ -160,10 +160,11 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
             
             
 //          before encoding, execute the simplify method here
+            TimeUsedForDataPreparingExport.timeBeginGeneralization = new Date().getTime();
             GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) describeFeatureType.getParameters()[0];
             WFSEXICommonMethods.generalize_feature_realtime(featureCollection, implExt);
             
-            
+            TimeUsedForDataPreparingExport.timeBeginDataTransmission = new Date().getTime();
             // execute should of set all the header information
             // including the lockID
             //
@@ -315,9 +316,7 @@ public class GeoJSONGetFeatureResponse extends WFSGetFeatureOutputFormat {
             serviceException.initCause(jsonException);
             throw serviceException;
         }
-        Date date_end = new Date();
-        System.out.println("Time for GeoJson preparing = "+(date_end.getTime() - date_begin.getTime()));
-        TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_begin.getTime());
+        
     }
 
     private void writeCrs(final GeoJSONBuilder jsonWriter,

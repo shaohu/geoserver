@@ -58,7 +58,6 @@ public class GML37ZOutputFormat extends GML3OutputFormat {
 		xzout.flush();
 		xzout.close();
 		Date date_end = new Date();
-		TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_getRequest.getTime());
 	}
 	
 	@Override

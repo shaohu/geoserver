@@ -47,7 +47,6 @@ public class JsonLZMAOutputFormat extends GeoJSONGetFeatureResponse {
     	Date date_end = new Date();
         System.out.println("Time for LZMA compression = "+(date_end.getTime() - date_begin.getTime()));
 //        System.out.println("Size for LZMA compression = "+(inputBytes.length));
-        TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_getRequest.getTime());
 	}
 	
 	@Override

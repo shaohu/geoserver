@@ -82,7 +82,6 @@ public class GML3EXIOutputFormat extends GML3OutputFormat {
 			throw new IOException(ex);
 		}
 		Date date_end = new Date();
-		TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_getRequest.getTime());
 	}
 	
 	@Override

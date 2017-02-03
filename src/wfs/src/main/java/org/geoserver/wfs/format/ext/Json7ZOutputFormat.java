@@ -46,7 +46,6 @@ public class Json7ZOutputFormat extends GeoJSONGetFeatureResponse {
 		xzout.flush();
 		xzout.close();
 		Date date_end = new Date();
-		TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_getRequest.getTime());
 	}
 	
 	@Override

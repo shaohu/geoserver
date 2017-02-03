@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,7 @@ import org.geoserver.ows.Request;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.ows.util.KvpMap;
 import org.geoserver.wfs.format.ext.TimeUsedForDataGeneralizingExport;
+import org.geoserver.wfs.format.ext.TimeUsedForDataPreparingExport;
 import org.geoserver.wfs.format.simplify.SimplifiedSimpleFeatureCollection;
 import org.geoserver.wfs.request.FeatureCollectionResponse;
 import org.geoserver.wfs.request.GetFeatureRequest;
@@ -247,6 +249,8 @@ public class GetFeature {
 	}
 
 	public FeatureCollectionResponse run(GetFeatureRequest request) throws WFSException {
+		System.out.println("inside of GetFeature.FeatureCollectionResponse(), we init the get request time");
+		TimeUsedForDataPreparingExport.timeGetWFSRequest = new Date().getTime();
 		List<Query> queries = request.getQueries();
 		if (queries.isEmpty()) {
 			throw new WFSException(request, "No query specified");

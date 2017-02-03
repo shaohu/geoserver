@@ -52,7 +52,6 @@ public class GML3ZIPOutputFormat extends GML3OutputFormat {
         gzip.write(gmlOutputStream.toByteArray());
         gzip.close();
         Date date_end = new Date();
-        TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_getRequest.getTime());
 	}
 	
 	@Override

@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -305,10 +306,13 @@ public class GML3OutputFormat extends WFSGetFeatureOutputFormat {
 
         
 //      before encoding, execute the simplify method here
+        TimeUsedForDataPreparingExport.timeBeginGeneralization = new Date().getTime();
         GetFeatureTypeImplExt implExt = (GetFeatureTypeImplExt) getFeature.getParameters()[0];
         WFSEXICommonMethods.generalize_feature_realtime(results, implExt);
         
         setAdditionalSchemaLocations(encoder, request, wfs);
+        
+        TimeUsedForDataPreparingExport.timeBeginDataTransmission = new Date().getTime();
         if (this.isComplexFeature(results)) {
             complexFeatureStreamIntercept(results, output, encoder);
         } else {

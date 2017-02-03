@@ -16,9 +16,12 @@ import net.opengis.wfs.TransactionResponseType;
 import net.opengis.wfs.TransactionType;
 import sun.security.util.DisabledAlgorithmConstraints;
 
+import java.util.Date;
+
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.config.GeoServer;
+import org.geoserver.wfs.format.ext.TimeUsedForDataPreparingExport;
 import org.geoserver.wfs.request.DescribeFeatureTypeRequest;
 import org.geoserver.wfs.request.FeatureCollectionResponse;
 import org.geoserver.wfs.request.GetCapabilitiesRequest;
@@ -120,6 +123,7 @@ public class DefaultWebFeatureService implements WebFeatureService, ApplicationC
     public FeatureCollectionResponse getFeature(GetFeatureType request)
         throws WFSException {
     	System.out.println("FeatureCollectionResponse.getFeature function is called");
+    	
         GetFeature getFeature = new GetFeature(getServiceInfo(), catalog);
         getFeature.setFilterFactory(filterFactory);
         System.out.println("Before the function new GetFeatureRequest.WFS11(request)");

@@ -20,7 +20,9 @@ import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZOutputStream;
 
 public class TimeUsedForDataPreparingExport extends GML3OutputFormat{
-	static public int timeUsedForDataPreparing = 0;
+	static public long timeGetWFSRequest = 0;
+	static public long timeBeginGeneralization = 0;
+	static public long timeBeginDataTransmission = 0;
 	
 	static public int totalPointsCount = 0;
 	static public int totalPointsSimplifiedCount = 0;
@@ -36,11 +38,18 @@ public class TimeUsedForDataPreparingExport extends GML3OutputFormat{
 	protected void write(FeatureCollectionResponse featureCollection, OutputStream output, Operation getFeature)
 			throws IOException, ServiceException {
 		
-		String line = String.format("timeUsedForDataPreparing:%s;totalPointsCount:%s;totalPointsSimplifiedCount:%s", 
-				timeUsedForDataPreparing, totalPointsCount, totalPointsSimplifiedCount);
+		String line = String.format(""
+				+ "totalPointsCount:%s;"
+				+ "totalPointsSimplifiedCount:%s;"
+				+ "timeGetWFSRequest:%s;"
+				+ "timeBeginGeneralization:%s;"
+				+ "timeBeginDataTransmission:%s", 
+				totalPointsCount, totalPointsSimplifiedCount, timeGetWFSRequest, timeBeginGeneralization, timeBeginDataTransmission);
 		
 		output.write(line.getBytes());
-		timeUsedForDataPreparing = 0;
+		timeGetWFSRequest = 0;
+		timeBeginGeneralization = 0;
+		timeBeginDataTransmission = 0;
 		totalPointsCount = 0;
 		totalPointsSimplifiedCount = 0;
 	}

@@ -83,7 +83,6 @@ public class JsonEXIOutputFormat extends GeoJSONGetFeatureResponse {
 //	        System.out.println("Size for JSON-EXI-JavaScript compression = "+((sizeOS).size()));
 		}
 		Date date_end = new Date();
-		TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_getRequest.getTime());
 	}
 	
 

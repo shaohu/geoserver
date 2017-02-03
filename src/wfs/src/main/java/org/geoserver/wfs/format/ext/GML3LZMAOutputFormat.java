@@ -53,7 +53,6 @@ public class GML3LZMAOutputFormat extends GML3OutputFormat {
     	outStream.flush();
     	outStream.close();
     	Date date_end = new Date();
-    	TimeUsedForDataPreparingExport.timeUsedForDataPreparing = (int)(date_end.getTime()-date_getRequest.getTime());
 	}
 	
 	@Override
