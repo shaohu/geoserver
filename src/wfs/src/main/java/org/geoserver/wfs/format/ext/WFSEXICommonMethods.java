@@ -16,9 +16,11 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureImpl;
+import org.geotools.feature.simple.SimpleFeatureTypeImpl;
 import org.opengis.feature.Feature;
 import org.opengis.feature.Property;
 import org.opengis.feature.simple.SimpleFeatureType;
+import org.opengis.feature.type.AttributeDescriptor;
 
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
@@ -74,6 +76,7 @@ public class WFSEXICommonMethods {
 		ArrayList<SimpleFeatureCollection>featureCollectionsBuffer = new ArrayList<>();
 		int totalSize = 0;
 		int totalSizeSimplified = 0;
+		
 		for(int i=0; i<features.size(); i++){
 			SimplifiedSimpleFeatureCollection collectionNew = new SimplifiedSimpleFeatureCollection();
 			featureCollectionsBuffer.add(collectionNew);
@@ -87,6 +90,7 @@ public class WFSEXICommonMethods {
 			System.out.println("here is the schema of newly generalized data collection");
 			System.out.println(featureCollection.getSchema());
 			FeatureIterator<? extends Feature> iterator = featureCollection.features();
+			SimpleFeatureType newSimpleFeatureType = null;
 			while (iterator.hasNext()) {
 				Feature nextFeature = iterator.next();
 				if (nextFeature instanceof PreGeneralizedSimpleFeature) {
@@ -114,8 +118,22 @@ public class WFSEXICommonMethods {
 					 * }
 					 */
 					PreGeneralizedSimpleFeature generalizedSimpleFeature = (PreGeneralizedSimpleFeature) nextFeature;
+					if(newSimpleFeatureType==null){
+						SimpleFeatureType sft = generalizedSimpleFeature.getType();
+//						AttributeDescriptor geomDescriptor = sft.getAttributeDescriptors().get(sft.getAttributeDescriptors().size()-1);
+						ArrayList<AttributeDescriptor> attributeDescriptorList = new ArrayList<AttributeDescriptor>();
+						attributeDescriptorList.add(sft.getGeometryDescriptor());
+						if(generalizedSimpleFeature.getAttributes().size()==1){
+							newSimpleFeatureType = new SimpleFeatureTypeImpl(sft.getName(), attributeDescriptorList, 
+									sft.getGeometryDescriptor(),sft.isAbstract(), sft.getRestrictions(), sft.getSuper(), sft.getDescription());
+						}else{
+							newSimpleFeatureType = sft;
+						}
+						
+					}
+					
 					SimpleFeatureImpl newFeature = new SimpleFeatureImpl(generalizedSimpleFeature.getAttributes(),
-							generalizedSimpleFeature.getType(), generalizedSimpleFeature.getIdentifier());
+							newSimpleFeatureType, generalizedSimpleFeature.getIdentifier());
 					newFeature.setDefaultGeometry(generalizedSimpleFeature.getDefaultGeometry());
 					nextFeature = newFeature;
 				}
